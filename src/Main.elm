@@ -38,18 +38,25 @@ init =
 
 
 type Msg
-    = Increment String
-    | Decrement String
+    = Select String
 
 
 update : Msg -> Model -> Model
 update msg model =
     case msg of
-        Increment mType ->
-            { model | ministries = Dict.update mType (addModel 1) model.ministries }
+        Select ps ->
+            let
+                p =
+                    pairDecode ps
+            in
+            { model
+                | ministries =
+                    if Dict.get p.second model.ministries == Just 0 then
+                        Dict.update p.first (addModel 1) model.ministries
 
-        Decrement mType ->
-            { model | ministries = Dict.update mType (addModel -1) model.ministries }
+                    else
+                        Dict.update p.second (addModel -1) (Dict.update p.first (addModel 1) model.ministries)
+            }
 
 
 addModel : Int -> Maybe Int -> Maybe Int
@@ -66,41 +73,45 @@ addModel add v =
 -- VIEW
 
 
+type alias SelectionPair =
+    { first : String
+    , second : String
+    }
+
+
+pairEncode : Bool -> SelectionPair -> String
+pairEncode isReverse p =
+    if isReverse then
+        p.second ++ "," ++ p.first
+
+    else
+        p.first ++ "," ++ p.second
+
+
+pairDecode : String -> SelectionPair
+pairDecode ps =
+    case String.split "," ps of
+        [ first, second ] ->
+            SelectionPair first second
+
+        _ ->
+            SelectionPair "Nothing" "Nothing"
+
+
 view : Model -> Html Msg
 view model =
     div []
         [ h1 [] [ text "5役者の賜物の査定" ]
         , p [] [ text "下記1~30には、2つの主張(性向)が併記されています。そのうち、自分のことだ思う方を選んでください。" ]
-        , input [ type_ "radio", name "rrr", value "n" ] [ text "asdfasdfa" ]
-        , input [ type_ "radio", name "rrr", value "n1" ] [ text "ddddd" ]
         , table [ style "border-collapse" "collapse" ]
             [ tr []
-                [ td [ sbs ] [ text "1" ]
-                , tr [ sbs ]
-                    [ td [ sbs ] [ text "aaa" ]
-                    , td [ sbs ] [ text "問題文" ]
-                    ]
-                , tr [ sbs ]
-                    [ td [ sbs ] [ text "bbb" ]
-                    , td [ sbs ] [ text "問題部" ]
-                    ]
+                [ th [ sbs ] [ text "No" ]
+                , th [ sbs ] [ text "主張(性向)" ]
                 ]
-            , tr []
-                [ td [ sbs ] [ text "2" ]
-                , tr [ sbs ]
-                    [ td [ sbs ] [ text "ccc" ]
-                    , td [ sbs ] [ text "問題文" ]
-                    ]
-                , tr [ sbs ]
-                    [ td [ sbs ] [ text "bbb" ]
-                    , td [ sbs ] [ text "問題部" ]
-                    ]
-                ]
-            , row 3 "ccc" "Apostles" "question" "Prophets" Increment
-            , row 4 "ccc" "Apostles" "question" "Prophets" Increment
-            , row 5 "ccc" "Apostles" "question" "Prophets" Increment
-            , row 6 "ccc" "Apostles" "question" "Prophets" Increment
-            , row 7 "ccc" "Apostles" "question" "Prophets" Increment
+            , row 1 "問題AAAA" "問題BBB" (SelectionPair "Apostles" "Prophets") Select
+            , row 2 "問題AAAA" "問題BBB" (SelectionPair "Apostles" "Prophets") Select
+            , row 3 "問題AAAA" "問題BBB" (SelectionPair "Apostles" "Prophets") Select
+            , row 4 "問題AAAA" "問題BBB" (SelectionPair "Apostles" "Prophets") Select
             ]
         , div [] [ text (String.fromInt (Maybe.withDefault 0 (Dict.get "Apostles" model.ministries))) ]
         , div [] [ text (String.fromInt (Maybe.withDefault 0 (Dict.get "Prophets" model.ministries))) ]
@@ -110,16 +121,16 @@ view model =
         ]
 
 
-row : Int -> String -> String -> String -> String -> (String -> msg) -> Html msg
-row index q1 m1 q2 m2 toMsg =
+row : Int -> String -> String -> SelectionPair -> (String -> msg) -> Html msg
+row index q1 q2 m toMsg =
     tr []
         [ td [ sbs ] [ text (String.fromInt index) ]
         , tr [ sbs ]
-            [ td [ sbs ] [ input [ type_ "radio", name (String.fromInt index), value m1, onInput toMsg ] [] ]
+            [ td [ sbs ] [ input [ type_ "radio", name (String.fromInt index), value (pairEncode False m), onInput toMsg ] [] ]
             , td [ sbs ] [ text q1 ]
             ]
         , tr [ sbs ]
-            [ td [ sbs ] [ input [ type_ "radio", name (String.fromInt index), value m2, onInput toMsg ] [] ]
+            [ td [ sbs ] [ input [ type_ "radio", name (String.fromInt index), value (pairEncode True m), onInput toMsg ] [] ]
             , td [ sbs ] [ text q2 ]
             ]
         ]
