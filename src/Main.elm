@@ -24,11 +24,11 @@ init : Model
 init =
     { ministries =
         Dict.fromList
-            [ ( "Apostles", 0 )
-            , ( "Prophets", 0 )
-            , ( "Evangelists", 0 )
-            , ( "Shepherds", 0 )
-            , ( "Teachers", 0 )
+            [ ( minister A, 0 )
+            , ( minister B, 0 )
+            , ( minister C, 0 )
+            , ( minister D, 0 )
+            , ( minister E, 0 )
             ]
     }
 
