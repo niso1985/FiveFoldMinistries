@@ -97,56 +97,20 @@ getSelectedNum check d =
 
 
 type Msg
-    = Select String
+    = Select Int String
 
 
 update : Msg -> Model -> Model
 update msg model =
     case msg of
-        Select sb ->
-            let
-                p =
-                    stringToSb sb
-            in
+        Select index str ->
             { model
-                | answer = Dict.update p.index (\_ -> Just p.m) model.answer
+                | answer = Dict.update index (\_ -> Just (stringToMinister str)) model.answer
             }
 
 
 
 -- VIEW
-
-
-type alias SelectButton =
-    { index : Int
-    , m : MinisterType
-    }
-
-
-sbToString : SelectButton -> String
-sbToString p =
-    String.fromInt p.index ++ "," ++ ministerToString p.m
-
-
-stringToSb : String -> SelectButton
-stringToSb ps =
-    case String.split "," ps of
-        [ i, m ] ->
-            let
-                index =
-                    case String.toInt i of
-                        Just a ->
-                            a
-
-                        -- 不確定データが無いので、確実に呼び出されない
-                        Nothing ->
-                            -1
-            in
-            SelectButton index (stringToMinister m)
-
-        -- ここにも到達しない
-        _ ->
-            SelectButton -1 None
 
 
 view : Model -> Html Msg
@@ -203,11 +167,11 @@ row index q1 q2 m1 m2 =
     tr []
         [ td [ sbs ] [ text (String.fromInt index) ]
         , tr [ sbs ]
-            [ td [ sbs ] [ input [ type_ "radio", name (String.fromInt index), value (sbToString (SelectButton index m1)), onInput Select ] [] ]
+            [ td [ sbs ] [ input [ type_ "radio", name (String.fromInt index), value (ministerToString m1), onInput (Select index) ] [] ]
             , td [ sbs ] [ text q1 ]
             ]
         , tr [ sbs ]
-            [ td [ sbs ] [ input [ type_ "radio", name (String.fromInt index), value (sbToString (SelectButton index m2)), onInput Select ] [] ]
+            [ td [ sbs ] [ input [ type_ "radio", name (String.fromInt index), value (ministerToString m2), onInput (Select index) ] [] ]
             , td [ sbs ] [ text q2 ]
             ]
         ]
