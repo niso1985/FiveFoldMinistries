@@ -1,5 +1,6 @@
 module Main exposing (Model, Msg(..), init, main, update, view)
 
+import Array exposing (Array)
 import Browser
 import Dict exposing (Dict)
 import Html exposing (..)
@@ -17,12 +18,12 @@ main =
 
 
 type alias Model =
-    { answer : Dict Int MinisterType }
+    { answer : Array MinisterType }
 
 
 init : Model
 init =
-    { answer = Dict.fromList [] }
+    { answer = Array.repeat 30 None }
 
 
 type MinisterType
@@ -78,18 +79,18 @@ stringToMinister str =
             None
 
 
-getSelectedNum : MinisterType -> Dict Int MinisterType -> Int
-getSelectedNum check d =
-    Dict.foldl
-        (\_ m sum ->
-            if m == check then
-                sum + 1
+getSelectedNum : MinisterType -> Array MinisterType -> Int
+getSelectedNum check a =
+    a
+        |> Array.foldl
+            (\m sum ->
+                if m == check then
+                    sum + 1
 
-            else
-                sum
-        )
-        0
-        d
+                else
+                    sum
+            )
+            0
 
 
 
@@ -105,7 +106,7 @@ update msg model =
     case msg of
         Select index str ->
             { model
-                | answer = Dict.update index (\_ -> Just (stringToMinister str)) model.answer
+                | answer = model.answer |> Array.set index (stringToMinister str)
             }
 
 
@@ -154,11 +155,11 @@ view model =
             , row 29 "人々は私のところに来て、サポートと助けを求めます。" "私は他の人を訓練して、働きに解き放つのが好きです。" D A
             , row 30 "私は人々が正しい情報を保つのを助けます。" "私はイベントで一緒に集うために、人々を招くのが得意です。" E C
             ]
-        , div [] [ text (String.fromInt (getSelectedNum A model.answer)) ]
-        , div [] [ text (String.fromInt (getSelectedNum B model.answer)) ]
-        , div [] [ text (String.fromInt (getSelectedNum C model.answer)) ]
-        , div [] [ text (String.fromInt (getSelectedNum D model.answer)) ]
-        , div [] [ text (String.fromInt (getSelectedNum E model.answer)) ]
+        , div [] [ text (String.fromInt (model.answer |> getSelectedNum A)) ]
+        , div [] [ text (String.fromInt (model.answer |> getSelectedNum B)) ]
+        , div [] [ text (String.fromInt (model.answer |> getSelectedNum C)) ]
+        , div [] [ text (String.fromInt (model.answer |> getSelectedNum D)) ]
+        , div [] [ text (String.fromInt (model.answer |> getSelectedNum E)) ]
         ]
 
 
@@ -167,11 +168,11 @@ row index q1 q2 m1 m2 =
     tr []
         [ td [ sbs ] [ text (String.fromInt index) ]
         , tr [ sbs ]
-            [ td [ sbs ] [ input [ type_ "radio", name (String.fromInt index), value (ministerToString m1), onInput (Select index) ] [] ]
+            [ td [ sbs ] [ input [ type_ "radio", name (String.fromInt index), value (ministerToString m1), onInput (Select (index - 1)) ] [] ]
             , td [ sbs ] [ text q1 ]
             ]
         , tr [ sbs ]
-            [ td [ sbs ] [ input [ type_ "radio", name (String.fromInt index), value (ministerToString m2), onInput (Select index) ] [] ]
+            [ td [ sbs ] [ input [ type_ "radio", name (String.fromInt index), value (ministerToString m2), onInput (Select (index - 1)) ] [] ]
             , td [ sbs ] [ text q2 ]
             ]
         ]
