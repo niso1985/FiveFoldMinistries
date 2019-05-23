@@ -5721,11 +5721,73 @@ var author$project$Main$row = F5(
 						]))
 				]));
 	});
+var elm$core$Array$fromListHelp = F3(
+	function (list, nodeList, nodeListSize) {
+		fromListHelp:
+		while (true) {
+			var _n0 = A2(elm$core$Elm$JsArray$initializeFromList, elm$core$Array$branchFactor, list);
+			var jsArray = _n0.a;
+			var remainingItems = _n0.b;
+			if (_Utils_cmp(
+				elm$core$Elm$JsArray$length(jsArray),
+				elm$core$Array$branchFactor) < 0) {
+				return A2(
+					elm$core$Array$builderToArray,
+					true,
+					{nodeList: nodeList, nodeListSize: nodeListSize, tail: jsArray});
+			} else {
+				var $temp$list = remainingItems,
+					$temp$nodeList = A2(
+					elm$core$List$cons,
+					elm$core$Array$Leaf(jsArray),
+					nodeList),
+					$temp$nodeListSize = nodeListSize + 1;
+				list = $temp$list;
+				nodeList = $temp$nodeList;
+				nodeListSize = $temp$nodeListSize;
+				continue fromListHelp;
+			}
+		}
+	});
+var elm$core$Array$fromList = function (list) {
+	if (!list.b) {
+		return elm$core$Array$empty;
+	} else {
+		return A3(elm$core$Array$fromListHelp, list, _List_Nil, 0);
+	}
+};
+var elm$core$Array$filter = F2(
+	function (isGood, array) {
+		return elm$core$Array$fromList(
+			A3(
+				elm$core$Array$foldr,
+				F2(
+					function (x, xs) {
+						return isGood(x) ? A2(elm$core$List$cons, x, xs) : xs;
+					}),
+				_List_Nil,
+				array));
+	});
+var elm$core$Array$length = function (_n0) {
+	var len = _n0.a;
+	return len;
+};
+var elm$core$Basics$neq = _Utils_notEqual;
+var elm$html$Html$button = _VirtualDom_node('button');
 var elm$html$Html$div = _VirtualDom_node('div');
 var elm$html$Html$h1 = _VirtualDom_node('h1');
 var elm$html$Html$p = _VirtualDom_node('p');
 var elm$html$Html$table = _VirtualDom_node('table');
 var elm$html$Html$th = _VirtualDom_node('th');
+var elm$json$Json$Encode$bool = _Json_wrap;
+var elm$html$Html$Attributes$boolProperty = F2(
+	function (key, bool) {
+		return A2(
+			_VirtualDom_property,
+			key,
+			elm$json$Json$Encode$bool(bool));
+	});
+var elm$html$Html$Attributes$disabled = elm$html$Html$Attributes$boolProperty('disabled');
 var author$project$Main$view = function (model) {
 	return A2(
 		elm$html$Html$div,
@@ -5806,6 +5868,26 @@ var author$project$Main$view = function (model) {
 						A5(author$project$Main$row, 28, '私はタイミングがあれば、熱心に私の好きなことを分かち合います。', '私は物事を秩序に従って整理して、明確にするのが好きです。', author$project$Main$C, author$project$Main$E),
 						A5(author$project$Main$row, 29, '人々は私のところに来て、サポートと助けを求めます。', '私は他の人を訓練して、働きに解き放つのが好きです。', author$project$Main$D, author$project$Main$A),
 						A5(author$project$Main$row, 30, '私は人々が正しい情報を保つのを助けます。', '私はイベントで一緒に集うために、人々を招くのが得意です。', author$project$Main$E, author$project$Main$C)
+					])),
+				A2(
+				elm$html$Html$button,
+				_List_fromArray(
+					[
+						elm$html$Html$Attributes$disabled(
+						function (len) {
+							return len;
+						}(
+							elm$core$Array$length(
+								A2(
+									elm$core$Array$filter,
+									function (m) {
+										return _Utils_eq(m, author$project$Main$None);
+									},
+									model.answer))))
+					]),
+				_List_fromArray(
+					[
+						elm$html$Html$text('診断')
 					])),
 				A2(
 				elm$html$Html$div,
@@ -6155,7 +6237,6 @@ var elm$browser$Debugger$Overlay$viewBadMetadata = function (_n0) {
 };
 var elm$browser$Debugger$Overlay$Cancel = {$: 'Cancel'};
 var elm$browser$Debugger$Overlay$Proceed = {$: 'Proceed'};
-var elm$html$Html$button = _VirtualDom_node('button');
 var elm$virtual_dom$VirtualDom$Normal = function (a) {
 	return {$: 'Normal', a: a};
 };
@@ -7463,10 +7544,6 @@ var elm$browser$Debugger$History$consSnapshot = F3(
 				A4(elm$html$Html$Lazy$lazy3, elm$browser$Debugger$History$viewSnapshot, currentIndexHelp, index, snapshot),
 				rest));
 	});
-var elm$core$Array$length = function (_n0) {
-	var len = _n0.a;
-	return len;
-};
 var elm$browser$Debugger$History$viewSnapshots = F2(
 	function (currentIndex, snapshots) {
 		var highIndex = elm$browser$Debugger$History$maxSnapshotSize * elm$core$Array$length(snapshots);
@@ -8882,41 +8959,6 @@ var elm$browser$Debugger$History$Snapshot = F2(
 	function (model, messages) {
 		return {messages: messages, model: model};
 	});
-var elm$core$Array$fromListHelp = F3(
-	function (list, nodeList, nodeListSize) {
-		fromListHelp:
-		while (true) {
-			var _n0 = A2(elm$core$Elm$JsArray$initializeFromList, elm$core$Array$branchFactor, list);
-			var jsArray = _n0.a;
-			var remainingItems = _n0.b;
-			if (_Utils_cmp(
-				elm$core$Elm$JsArray$length(jsArray),
-				elm$core$Array$branchFactor) < 0) {
-				return A2(
-					elm$core$Array$builderToArray,
-					true,
-					{nodeList: nodeList, nodeListSize: nodeListSize, tail: jsArray});
-			} else {
-				var $temp$list = remainingItems,
-					$temp$nodeList = A2(
-					elm$core$List$cons,
-					elm$core$Array$Leaf(jsArray),
-					nodeList),
-					$temp$nodeListSize = nodeListSize + 1;
-				list = $temp$list;
-				nodeList = $temp$nodeList;
-				nodeListSize = $temp$nodeListSize;
-				continue fromListHelp;
-			}
-		}
-	});
-var elm$core$Array$fromList = function (list) {
-	if (!list.b) {
-		return elm$core$Array$empty;
-	} else {
-		return A3(elm$core$Array$fromListHelp, list, _List_Nil, 0);
-	}
-};
 var elm$browser$Debugger$History$addRecent = F3(
 	function (msg, newModel, _n0) {
 		var model = _n0.model;
@@ -9544,7 +9586,6 @@ var elm$browser$Debugger$Report$MessageChanged = F2(
 var elm$browser$Debugger$Report$SomethingChanged = function (a) {
 	return {$: 'SomethingChanged', a: a};
 };
-var elm$core$Basics$neq = _Utils_notEqual;
 var elm$browser$Debugger$Metadata$checkTypes = F2(
 	function (old, _new) {
 		return (!_Utils_eq(old.message, _new.message)) ? A2(elm$browser$Debugger$Report$MessageChanged, old.message, _new.message) : elm$browser$Debugger$Report$SomethingChanged(

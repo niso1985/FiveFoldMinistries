@@ -2,7 +2,6 @@ module Main exposing (Model, Msg(..), init, main, update, view)
 
 import Array exposing (Array)
 import Browser
-import Dict exposing (Dict)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
@@ -155,6 +154,7 @@ view model =
             , row 29 "人々は私のところに来て、サポートと助けを求めます。" "私は他の人を訓練して、働きに解き放つのが好きです。" D A
             , row 30 "私は人々が正しい情報を保つのを助けます。" "私はイベントで一緒に集うために、人々を招くのが得意です。" E C
             ]
+        , button [ disabled (model.answer |> Array.filter (\m -> m == None) |> Array.length |> (\len -> len /= 0)) ] [ text "診断" ]
         , div [] [ text (String.fromInt (model.answer |> getSelectedNum A)) ]
         , div [] [ text (String.fromInt (model.answer |> getSelectedNum B)) ]
         , div [] [ text (String.fromInt (model.answer |> getSelectedNum C)) ]
