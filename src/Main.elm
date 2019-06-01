@@ -104,9 +104,7 @@ update : Msg -> Model -> Model
 update msg model =
     case msg of
         Select index str ->
-            { model
-                | answers = model.answers |> Array.set index (stringToMinister str)
-            }
+            { answers = model.answers |> Array.set index (stringToMinister str) }
 
 
 
