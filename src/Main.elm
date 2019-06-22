@@ -124,7 +124,12 @@ findNo1SelectedMinisterType : Array MinisterType -> List MinisterType
 findNo1SelectedMinisterType a =
     let
         item =
-            [ A, B, C, D, E ] |> List.map (\m -> ( getSelectedNum m a, m )) |> Dict.Extra.groupBy (\( num, _ ) -> num) |> Dict.toList |> sortByFirst |> List.head
+            [ A, B, C, D, E ]
+                |> List.map (\m -> ( getSelectedNum m a, m ))
+                |> Dict.Extra.groupBy (\( num, _ ) -> num)
+                |> Dict.toList
+                |> sortByFirst
+                |> List.head
     in
     case item of
         Just ( _, lm ) ->
