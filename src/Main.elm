@@ -2,6 +2,8 @@ module Main exposing (Model, Msg(..), init, main, update, view)
 
 import Array exposing (Array)
 import Browser
+import Dict exposing (..)
+import Dict.Extra exposing (..)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
@@ -118,18 +120,18 @@ getSelectedNum check a =
             0
 
 
-findNo1SelectedMinisterType : Array MinisterType -> MinisterType
+findNo1SelectedMinisterType : Array MinisterType -> List MinisterType
 findNo1SelectedMinisterType a =
     let
         item =
-            [ A, B, C, D, E ] |> List.map (\m -> ( getSelectedNum m a, m )) |> sortByFirst |> List.head
+            [ A, B, C, D, E ] |> List.map (\m -> ( getSelectedNum m a, m )) |> Dict.Extra.groupBy (\( num, _ ) -> num) |> Dict.toList |> sortByFirst |> List.head
     in
     case item of
-        Just ( _, minister ) ->
-            minister
+        Just ( _, lm ) ->
+            List.map (\( _, m ) -> m) lm
 
         _ ->
-            None
+            [ None ]
 
 
 sortByFirst : List ( comparable, b ) -> List ( comparable, b )
@@ -224,11 +226,7 @@ view model =
             ]
         , div (onClick (Submit False) :: overlayClose model.isOpen)
             [ div []
-                [ span [] [ text "あなたの一次的な5役者の賜物は・・・" ]
-                , div []
-                    [ h2 [] [ text (findNo1SelectedMinisterType model.answers |> ministerToText) ]
-                    ]
-                ]
+                (span [] [ text "あなたの一次的な5役者の賜物は・・・" ] :: create1stResult model.answers)
             ]
         , div (overlay model.isOpen) []
         ]
@@ -270,3 +268,17 @@ overlayClose isOpen =
 
     else
         [ class "overlay-close" ]
+
+
+create1stResult : Array MinisterType -> List (Html msg)
+create1stResult a =
+    let
+        lm =
+            findNo1SelectedMinisterType a
+    in
+    lm
+        |> List.map
+            (\minister ->
+                div []
+                    [ h2 [] [ text (ministerToText minister) ] ]
+            )
