@@ -82,6 +82,28 @@ stringToMinister str =
             None
 
 
+ministerToText : MinisterType -> String
+ministerToText m =
+    case m of
+        A ->
+            "使徒"
+
+        B ->
+            "預言者"
+
+        C ->
+            "伝道者"
+
+        D ->
+            "牧会"
+
+        E ->
+            "教師"
+
+        None ->
+            "エラーが発生しました。"
+
+
 getSelectedNum : MinisterType -> Array MinisterType -> Int
 getSelectedNum check a =
     a
@@ -94,6 +116,25 @@ getSelectedNum check a =
                     sum
             )
             0
+
+
+findNo1SelectedMinisterType : Array MinisterType -> MinisterType
+findNo1SelectedMinisterType a =
+    let
+        item =
+            [ A, B, C, D, E ] |> List.map (\m -> ( getSelectedNum m a, m )) |> sortByFirst |> List.head
+    in
+    case item of
+        Just ( _, minister ) ->
+            minister
+
+        _ ->
+            None
+
+
+sortByFirst : List ( comparable, b ) -> List ( comparable, b )
+sortByFirst =
+    List.sortBy Tuple.first >> List.reverse
 
 
 
@@ -181,7 +222,14 @@ view model =
             , div [] [ text (String.fromInt (model.answers |> getSelectedNum D)) ]
             , div [] [ text (String.fromInt (model.answers |> getSelectedNum E)) ]
             ]
-        , div (onClick (Submit False) :: overlayClose model.isOpen) [ text "あなたは**タイプです" ]
+        , div (onClick (Submit False) :: overlayClose model.isOpen)
+            [ div []
+                [ span [] [ text "あなたの一次的な5役者の賜物は・・・" ]
+                , div []
+                    [ h2 [] [ text (findNo1SelectedMinisterType model.answers |> ministerToText) ]
+                    ]
+                ]
+            ]
         , div (overlay model.isOpen) []
         ]
 
