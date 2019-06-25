@@ -169,9 +169,9 @@ update msg model =
 
 view : Model -> Html Msg
 view model =
-    div []
-        [ div []
-            [ h1 [] [ text "5役者の賜物の査定" ]
+    section [ class "section" ]
+        [ div [ class "container" ]
+            [ h1 [ class "title" ] [ text "5役者の賜物の査定" ]
             , p [] [ text "下記1~30には、2つの主張(性向)が併記されています。そのうち、自分のことだ思う方を選んでください。" ]
             , a [ href "aaa.html" ] [ text "性向一覧確認" ]
             , table [ style "border-collapse" "collapse" ]
@@ -260,7 +260,7 @@ sbs =
 overlay : Bool -> List (Attribute msg)
 overlay isOpen =
     if isOpen then
-        [ class "overlay", class "is-open" ]
+        [ class "overlay is-open" ]
 
     else
         [ class "overlay" ]
@@ -269,7 +269,7 @@ overlay isOpen =
 overlayClose : Bool -> List (Attribute msg)
 overlayClose isOpen =
     if isOpen then
-        [ class "overlay-close", class "is-open" ]
+        [ class "overlay-close is-open" ]
 
     else
         [ class "overlay-close" ]
@@ -284,10 +284,88 @@ create1stResult a =
     lm
         |> List.map
             (\minister ->
-                div []
-                    [ h2 [] [ text (ministerToText minister) ]
-                    , figure [ class "image is-128x128" ]
-                        [ img [ src ("./img/" ++ ministerToString minister ++ ".svg"), alt (ministerToString minister) ] []
+                div [ class "columns" ]
+                    [ h2 [ class "subtitle" ] [ text (ministerToText minister) ]
+                    , div [ class "column" ]
+                        [ figure [ class "image is-64x64" ]
+                            [ img [ src ("./img/" ++ ministerToString minister ++ ".svg"), alt (ministerToString minister) ] []
+                            ]
+                        ]
+                    , div [ class "column" ]
+                        [ h3 [] [ text "特徴" ]
+                        , ministerProperty minister
+                        , h3 [] [ text "弱点" ]
+                        , ministerWeekPoint minister
                         ]
                     ]
             )
+
+
+ministerProperty : MinisterType -> Html msg
+ministerProperty m =
+    case m of
+        A ->
+            ul []
+                [ li [] [ text "人々が協力して効果的に動くことを期待する" ]
+                , li [] [ text "組織の一致を願っている" ]
+                , li [] [ text "イベントなど誰でも参加できるように配慮する" ]
+                , li [] [ text "リーダー的素質で人々が自発的に付いてくる" ]
+                , li [] [ text "異なるグループの人に共通の目的を与える" ]
+                ]
+
+        B ->
+            ul []
+                [ li [] [ text "天の思いを識別する" ]
+                , li [] [ text "人を励ますのにベストな言葉をかけられる" ]
+                , li [] [ text "人の人生の出来事を直感的に感じる" ]
+                ]
+
+        C ->
+            ul []
+                [ li [] [ text "自分が知っていて確信を持っていることを伝えるという責任を感じる" ]
+                , li [] [ text "自分が重要だと思うことを熱心に伝える" ]
+                , li [] [ text "新しい出会いや環境を好む" ]
+                , li [] [ text "重要だと思っていることを伝える機会を求める" ]
+                ]
+
+        D ->
+            ul []
+                [ li [] [ text "人を本気で思い遣る" ]
+                , li [] [ text "グループに溶け込めていない人を気遣いコンタクトする" ]
+                , li [] [ text "困っている人から頼りにされる" ]
+                ]
+
+        E ->
+            ul []
+                [ li [] [ text "原則をわかりやすく伝えられる" ]
+                , li [] [ text "人が人生の目的に忠実であるようにサポートする" ]
+                , li [] [ text "強固な土台を構築することに熱中する" ]
+                , li [] [ text "真理を愛する" ]
+                ]
+
+        None ->
+            ul []
+                [ li [] [ text "エラー" ]
+                ]
+
+
+ministerWeekPoint : MinisterType -> Html msg
+ministerWeekPoint m =
+    case m of
+        A ->
+            p [] [ text "支配的で威圧的になりやすい" ]
+
+        B ->
+            p [] [ text "変な人だと思われやすい" ]
+
+        C ->
+            p [] [ text "人から拒絶されているとか誤解されていると感じる" ]
+
+        D ->
+            p [] [ text "物事を頼まれると「境界線」を引くことが困難であるため疲れてしまう" ]
+
+        E ->
+            p [] [ text "不正や不実に直面した時に相手を裁いてしまいやすい" ]
+
+        None ->
+            p [] [ text "エラー" ]
