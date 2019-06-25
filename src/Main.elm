@@ -231,7 +231,7 @@ view model =
             ]
         , div (onClick (Submit False) :: overlayClose model.isOpen)
             [ div []
-                (span [] [ text "あなたの一次的な5役者の賜物は・・・" ] :: create1stResult model.answers)
+                (h2 [] [ text "診断結果" ] :: span [] [ text "あなたの一次的な5役者の賜物は・・・" ] :: create1stResult model.answers)
             ]
         , div (overlay model.isOpen) []
         ]
@@ -285,5 +285,9 @@ create1stResult a =
         |> List.map
             (\minister ->
                 div []
-                    [ h2 [] [ text (ministerToText minister) ] ]
+                    [ h2 [] [ text (ministerToText minister) ]
+                    , figure [ class "image is-128x128" ]
+                        [ img [ src ("./img/" ++ ministerToString minister ++ ".svg"), alt (ministerToString minister) ] []
+                        ]
+                    ]
             )
