@@ -144,6 +144,35 @@ sortByFirst =
     List.sortBy Tuple.first >> List.reverse
 
 
+findNo2SelectedMinisterType : Array MinisterType -> List MinisterType
+findNo2SelectedMinisterType a =
+    let
+        item =
+            [ A, B, C, D, E ]
+                |> List.map (\m -> ( getSelectedNum m a, m ))
+                |> Dict.Extra.groupBy (\( num, _ ) -> num)
+                |> Dict.toList
+                |> sortByFirst
+                |> List.take 2
+                |> List.reverse
+                |> List.head
+    in
+    case item of
+        Just ( _, lm ) ->
+            List.map
+                (\( n, m ) ->
+                    if n == 0 then
+                        None
+
+                    else
+                        m
+                )
+                lm
+
+        _ ->
+            [ None ]
+
+
 
 -- UPDATE
 
@@ -231,7 +260,11 @@ view model =
             ]
         , div (onClick (Submit False) :: overlayClose model.isOpen)
             [ div []
-                (h2 [] [ text "診断結果" ] :: span [] [ text "あなたの一次的な5役者の賜物は・・・" ] :: create1stResult model.answers)
+                (h2 [] [ text "診断結果" ]
+                    :: span [] [ text "あなたの一次的な5役者の賜物は・・・" ]
+                    :: create1stResult model.answers
+                    ++ create2ndResult model.answers
+                )
             ]
         , div (overlay model.isOpen) []
         ]
@@ -299,6 +332,38 @@ create1stResult a =
                         ]
                     ]
             )
+
+
+create2ndResult : Array MinisterType -> List (Html msg)
+create2ndResult a =
+    let
+        lm =
+            findNo2SelectedMinisterType a
+    in
+    if List.member None lm then
+        [ div [ class "columns" ] [] ]
+
+    else
+        span [] [ text "あなたの二次的な5役者の賜物は・・・" ]
+            :: (lm
+                    |> List.map
+                        (\minister ->
+                            div [ class "columns" ]
+                                [ h2 [ class "subtitle" ] [ text (ministerToText minister) ]
+                                , div [ class "column" ]
+                                    [ figure [ class "image is-64x64" ]
+                                        [ img [ src ("./img/" ++ ministerToString minister ++ ".svg"), alt (ministerToString minister) ] []
+                                        ]
+                                    ]
+                                , div [ class "column" ]
+                                    [ h3 [] [ text "特徴" ]
+                                    , ministerProperty minister
+                                    , h3 [] [ text "弱点" ]
+                                    , ministerWeekPoint minister
+                                    ]
+                                ]
+                        )
+               )
 
 
 ministerProperty : MinisterType -> Html msg
