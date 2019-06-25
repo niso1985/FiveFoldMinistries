@@ -264,6 +264,7 @@ view model =
                     :: span [] [ text "あなたの一次的な5役者の賜物は・・・" ]
                     :: create1stResult model.answers
                     ++ create2ndResult model.answers
+                    ++ [ createResultGraph model.answers ]
                 )
             ]
         , div (overlay model.isOpen) []
@@ -434,3 +435,24 @@ ministerWeekPoint m =
 
         None ->
             p [] [ text "エラー" ]
+
+
+createResultGraph : Array MinisterType -> Html msg
+createResultGraph a =
+    let
+        content =
+            [ A, B, C, D, E ] |> List.map (\m -> ( m, getSelectedNum m a )) |> List.map createMinisterGraph
+    in
+    div [ class "columns" ] content
+
+
+createMinisterGraph : ( MinisterType, Int ) -> Html msg
+createMinisterGraph ( m, num ) =
+    let
+        percentage =
+            num * 100 // 12
+    in
+    div [ class "column" ]
+        [ h4 [] [ text (ministerToText m) ]
+        , p [] [ text ((percentage |> String.fromInt) ++ "%") ]
+        ]
