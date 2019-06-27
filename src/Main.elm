@@ -263,16 +263,24 @@ view model =
             , div [] [ text (String.fromInt (model.answers |> getSelectedNum D)) ]
             , div [] [ text (String.fromInt (model.answers |> getSelectedNum E)) ]
             ]
-        , div (onClick (Submit False) :: overlayClose model.isOpen)
-            [ div []
-                (h2 [] [ text "診断結果" ]
-                    :: span [] [ text "あなたの一次的な5役者の賜物は・・・" ]
-                    :: create1stResult model.answers
-                    ++ create2ndResult model.answers
-                    ++ [ createResultGraph model.answers ]
-                )
+        , div (onClick (Submit False) :: modal model.isOpen)
+            [ div [ class "modal-background" ] []
+            , div [ class "modal-content is-huge modal-card" ]
+                [ header [ class "modal-card-head" ]
+                    [ p [ class "modal-card-title" ] [ text "診断結果" ]
+                    , button [ class "modal" ]
+                    ]
+                , section [ class "modal-card-body" ]
+                    (span [] [ text "あなたの一次的な5役者の賜物は・・・" ]
+                        :: create1stResult model.answers
+                        ++ create2ndResult model.answers
+                        ++ [ createResultGraph model.answers ]
+                    )
+                , footer [ class "modal-card-foot" ]
+                    [ button [ class "button modal-card-close is-large" ] [ text "閉じる" ]
+                    ]
+                ]
             ]
-        , div (overlay model.isOpen) []
         ]
 
 
@@ -290,22 +298,13 @@ row index q1 q2 m1 m2 =
     ]
 
 
-overlay : Bool -> List (Attribute msg)
-overlay isOpen =
+modal : Bool -> List (Attribute msg)
+modal isOpen =
     if isOpen then
-        [ class "overlay is-open" ]
+        [ class "modal modal-fx-fadeInScale is-active" ]
 
     else
-        [ class "overlay" ]
-
-
-overlayClose : Bool -> List (Attribute msg)
-overlayClose isOpen =
-    if isOpen then
-        [ class "overlay-close is-open" ]
-
-    else
-        [ class "overlay-close" ]
+        [ class "modal modal-fx-fadeInScale" ]
 
 
 create1stResult : Array MinisterType -> List (Html msg)
