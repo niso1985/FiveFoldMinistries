@@ -201,7 +201,7 @@ view model =
     section [ class "section" ]
         [ div [ class "container" ]
             [ h1 [ class "title" ] [ text "5役者の賜物の査定" ]
-            , p [] [ text "下記1~30には、2つの主張(性向)が併記されています。そのうち、自分のことだ思う方を選んでください。" ]
+            , p [] [ text "下記1~30には、2つの主張(性向)が併記されています。そのうち、自分のことだと思う方を選んでください。" ]
             , a [ href "aaa.html" ] [ text "性向一覧確認" ]
             , table [ class "table" ]
                 [ thead []
@@ -254,6 +254,7 @@ view model =
                      not (canSubmit model.answers)
                     )
                 , onClick (Submit True)
+                , class "button"
                 ]
                 [ text "回答" ]
             , div [] [ text (String.fromInt (model.answers |> getSelectedNum A)) ]
