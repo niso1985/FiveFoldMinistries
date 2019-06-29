@@ -274,7 +274,7 @@ view model =
                 , section [ class "modal-card-body" ]
                     [ div [ class "columns" ]
                         [ div [ class "column" ]
-                            (p [ class "content" ] [ text "あなたの一次的な5役者の賜物は・・・" ]
+                            (p [ class "content is-size-5" ] [ text "あなたの一次的な5役者の賜物は・・・" ]
                                 :: create1stResult model.answers
                                 ++ create2ndResult model.answers
                                 ++ [ createResultGraph model.answers ]
@@ -312,30 +312,31 @@ modal isOpen =
         [ class "modal modal-fx-fadeInScale" ]
 
 
+makeResultView : MinisterType -> Html msg
+makeResultView minister =
+    div [ class "box columns content is-vcentered", style "margin-bottom" "30px" ]
+        [ div [ class "column is-one-third" ]
+            [ span [ class "level-item subtitle is-3" ] [ text (ministerToText minister) ]
+            , figure [ class "level-item image" ]
+                [ img [ src ("./img/" ++ ministerToString minister ++ ".svg"), alt (ministerToString minister) ] []
+                ]
+            ]
+        , div [ class "column" ]
+            [ span [ class "tag" ] [ text "特徴" ]
+            , ministerProperty minister
+            , span [ class "tag" ] [ text "弱点" ]
+            , ministerWeekPoint minister
+            ]
+        ]
+
+
 create1stResult : Array MinisterType -> List (Html msg)
 create1stResult a =
     let
         lm =
             findNo1SelectedMinisterType a
     in
-    lm
-        |> List.map
-            (\minister ->
-                div [ class "box columns content is-vcentered" ]
-                    [ div [ class "column is-one-third" ]
-                        [ span [ class "level-item subtitle is-3" ] [ text (ministerToText minister) ]
-                        , figure [ class "level-item image" ]
-                            [ img [ src ("./img/" ++ ministerToString minister ++ ".svg"), alt (ministerToString minister) ] []
-                            ]
-                        ]
-                    , div [ class "column" ]
-                        [ span [ class "tag" ] [ text "特徴" ]
-                        , ministerProperty minister
-                        , span [ class "tag" ] [ text "弱点" ]
-                        , ministerWeekPoint minister
-                        ]
-                    ]
-            )
+    lm |> List.map makeResultView
 
 
 create2ndResult : Array MinisterType -> List (Html msg)
@@ -348,26 +349,8 @@ create2ndResult a =
         [ div [ class "columns" ] [] ]
 
     else
-        span [] [ text "あなたの二次的な5役者の賜物は・・・" ]
-            :: (lm
-                    |> List.map
-                        (\minister ->
-                            div [ class "columns" ]
-                                [ h2 [ class "subtitle" ] [ text (ministerToText minister) ]
-                                , div [ class "column" ]
-                                    [ figure [ class "image is-64x64" ]
-                                        [ img [ src ("./img/" ++ ministerToString minister ++ ".svg"), alt (ministerToString minister) ] []
-                                        ]
-                                    ]
-                                , div [ class "column" ]
-                                    [ h3 [] [ text "特徴" ]
-                                    , ministerProperty minister
-                                    , h3 [] [ text "弱点" ]
-                                    , ministerWeekPoint minister
-                                    ]
-                                ]
-                        )
-               )
+        p [ class "content is-size-5" ] [ text "あなたの二次的な5役者の賜物は・・・" ]
+            :: (lm |> List.map makeResultView)
 
 
 ministerProperty : MinisterType -> Html msg
