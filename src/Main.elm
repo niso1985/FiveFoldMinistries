@@ -306,10 +306,10 @@ row index q1 q2 m1 m2 =
 modal : Bool -> List (Attribute msg)
 modal isOpen =
     if isOpen then
-        [ class "modal modal-fx-fadeInScale is-active" ]
+        [ class "modal modal-fx-3dFlipHorizontal is-active" ]
 
     else
-        [ class "modal modal-fx-fadeInScale" ]
+        [ class "modal modal-fx-3dFlipHorizontal" ]
 
 
 makeResultView : MinisterType -> Html msg
@@ -317,7 +317,7 @@ makeResultView minister =
     div [ class "box columns content is-vcentered", style "margin-bottom" "30px" ]
         [ div [ class "column is-one-third" ]
             [ span [ class "level-item subtitle is-3" ] [ text (ministerToText minister) ]
-            , figure [ class "level-item image" ]
+            , figure [ class "level-item image is-1by1" ]
                 [ img [ src ("./img/" ++ ministerToString minister ++ ".svg"), alt (ministerToString minister) ] []
                 ]
             ]
@@ -429,7 +429,7 @@ createResultGraph a =
         content =
             [ A, B, C, D, E ] |> List.map (\m -> ( m, getSelectedNum m a )) |> List.map createMinisterGraph
     in
-    div [ class "columns" ] content
+    nav [ class "level is-mobile" ] content
 
 
 createMinisterGraph : ( MinisterType, Int ) -> Html msg
@@ -438,7 +438,9 @@ createMinisterGraph ( m, num ) =
         percentage =
             num * 100 // 12
     in
-    div [ class "column" ]
-        [ h4 [] [ text (ministerToText m) ]
-        , p [] [ text ((percentage |> String.fromInt) ++ "%") ]
+    div [ class "level-item has-text-centered" ]
+        [ div []
+            [ p [ class "heading" ] [ text (ministerToText m) ]
+            , p [ class "title" ] [ text ((percentage |> String.fromInt) ++ "%") ]
+            ]
         ]
