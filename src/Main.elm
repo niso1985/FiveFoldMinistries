@@ -22,6 +22,7 @@ type alias Model =
     { answers : Array ResultType
     , isResultOpen : Bool
     , isTendacyOpen : Bool
+    , name : Maybe String
     }
 
 
@@ -30,6 +31,7 @@ init =
     { answers = Array.repeat 30 None
     , isResultOpen = False
     , isTendacyOpen = False
+    , name = Nothing
     }
 
 
@@ -208,7 +210,16 @@ view model =
         [ div [ class "container" ]
             [ h1 [ class "title" ] [ text "5役者の賜物の査定" ]
             , p [ class "content" ] [ text "下記1~30には、2つの主張(性向)が併記されています。そのうち、自分のことだと思う方を選んでください。" ]
-            , a [ onClick (Confirm True), class "button" ] [ text "性向一覧確認" ]
+            , a [ onClick (Confirm True), class "button", style "margin-bottom" "24px" ] [ text "性向一覧確認" ]
+            , div [ class "level", style "margin-bottom" "0px" ]
+                [ div [ class "level-left" ]
+                    [ p [ class "level-item" ] [ text "名前" ]
+                    , div [ class "level-item" ]
+                        [ input [ class "input", placeholder "名前" ] []
+                        ]
+                    ]
+                ]
+            , p [ class "content is-small" ] [ text "名前を入力するとデータが保存されます。データを保存したくない場合は名前を入力しないでください。" ]
             , table [ class "table" ]
                 [ thead []
                     [ tr []
