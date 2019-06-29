@@ -265,19 +265,24 @@ view model =
             ]
         , div (onClick (Submit False) :: modal model.isOpen)
             [ div [ class "modal-background" ] []
-            , div [ class "modal-content is-huge modal-card" ]
+            , div [ class "modal-content modal-card" ]
                 [ header [ class "modal-card-head" ]
                     [ p [ class "modal-card-title" ] [ text "診断結果" ]
-                    , button [ class "modal" ]
+                    , button [ class "modal-button-close delete" ] []
+                    , br [] []
                     ]
                 , section [ class "modal-card-body" ]
-                    (span [] [ text "あなたの一次的な5役者の賜物は・・・" ]
-                        :: create1stResult model.answers
-                        ++ create2ndResult model.answers
-                        ++ [ createResultGraph model.answers ]
-                    )
+                    [ div [ class "columns" ]
+                        [ div [ class "column" ]
+                            (p [ class "content" ] [ text "あなたの一次的な5役者の賜物は・・・" ]
+                                :: create1stResult model.answers
+                                ++ create2ndResult model.answers
+                                ++ [ createResultGraph model.answers ]
+                            )
+                        ]
+                    ]
                 , footer [ class "modal-card-foot" ]
-                    [ button [ class "button modal-card-close is-large" ] [ text "閉じる" ]
+                    [ button [ class "button modal-card-close" ] [ text "閉じる" ]
                     ]
                 ]
             ]
@@ -316,18 +321,24 @@ create1stResult a =
     lm
         |> List.map
             (\minister ->
-                div [ class "columns" ]
-                    [ h2 [ class "subtitle" ] [ text (ministerToText minister) ]
-                    , div [ class "column" ]
-                        [ figure [ class "image is-64x64" ]
-                            [ img [ src ("./img/" ++ ministerToString minister ++ ".svg"), alt (ministerToString minister) ] []
+                div [ class "box columns content" ]
+                    [ div [ class "column" ]
+                        [ div [ class "level" ]
+                            [ div [ class "level-left" ]
+                                [ figure [ class "level-item image" ]
+                                    [ img [ src ("./img/" ++ ministerToString minister ++ ".svg"), alt (ministerToString minister) ] []
+                                    ]
+                                , span [ class "level-item subtitle is-3" ] [ text (ministerToText minister) ]
+                                ]
                             ]
-                        ]
-                    , div [ class "column" ]
-                        [ h3 [] [ text "特徴" ]
-                        , ministerProperty minister
-                        , h3 [] [ text "弱点" ]
-                        , ministerWeekPoint minister
+                        , div [ class "columns" ]
+                            [ div [ class "column" ]
+                                [ span [ class "tag" ] [ text "特徴" ]
+                                , ministerProperty minister
+                                , span [ class "tag" ] [ text "弱点" ]
+                                , ministerWeekPoint minister
+                                ]
+                            ]
                         ]
                     ]
             )
@@ -417,22 +428,22 @@ ministerWeekPoint : MinisterType -> Html msg
 ministerWeekPoint m =
     case m of
         A ->
-            p [] [ text "支配的で威圧的になりやすい" ]
+            ul [] [ li [] [ text "支配的で威圧的になりやすい" ] ]
 
         B ->
-            p [] [ text "変な人だと思われやすい" ]
+            ul [] [ li [] [ text "変な人だと思われやすい" ] ]
 
         C ->
-            p [] [ text "人から拒絶されているとか誤解されていると感じる" ]
+            ul [] [ li [] [ text "人から拒絶されているとか誤解されていると感じる" ] ]
 
         D ->
-            p [] [ text "物事を頼まれると「境界線」を引くことが困難であるため疲れてしまう" ]
+            ul [] [ li [] [ text "物事を頼まれると「境界線」を引くことが困難であるため疲れてしまう" ] ]
 
         E ->
-            p [] [ text "不正や不実に直面した時に相手を裁いてしまいやすい" ]
+            ul [] [ li [] [ text "不正や不実に直面した時に相手を裁いてしまいやすい" ] ]
 
         None ->
-            p [] [ text "エラー" ]
+            ul [] [ li [] [ text "エラー" ] ]
 
 
 createResultGraph : Array MinisterType -> Html msg
