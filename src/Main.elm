@@ -20,14 +20,16 @@ main =
 
 type alias Model =
     { answers : Array MinisterType
-    , isOpen : Bool
+    , isResultOpen : Bool
+    , isTendacyOpen : Bool
     }
 
 
 init : Model
 init =
     { answers = Array.repeat 30 None
-    , isOpen = False
+    , isResultOpen = False
+    , isTendacyOpen = False
     }
 
 
@@ -180,6 +182,7 @@ findNo2SelectedMinisterType a =
 type Msg
     = Select Int String
     | Submit Bool
+    | Confirm Bool
 
 
 update : Msg -> Model -> Model
@@ -189,7 +192,10 @@ update msg model =
             { model | answers = model.answers |> Array.set index (stringToMinister str) }
 
         Submit submitting ->
-            { model | isOpen = submitting }
+            { model | isResultOpen = submitting }
+
+        Confirm confirm ->
+            { model | isTendacyOpen = confirm }
 
 
 
@@ -201,8 +207,8 @@ view model =
     section [ class "section" ]
         [ div [ class "container" ]
             [ h1 [ class "title" ] [ text "5役者の賜物の査定" ]
-            , p [] [ text "下記1~30には、2つの主張(性向)が併記されています。そのうち、自分のことだと思う方を選んでください。" ]
-            , a [ href "aaa.html" ] [ text "性向一覧確認" ]
+            , p [ class "content" ] [ text "下記1~30には、2つの主張(性向)が併記されています。そのうち、自分のことだと思う方を選んでください。" ]
+            , a [ onClick (Confirm True), class "button" ] [ text "性向一覧確認" ]
             , table [ class "table" ]
                 [ thead []
                     [ tr []
@@ -265,7 +271,7 @@ view model =
                , div [] [ text (String.fromInt (model.answers |> getSelectedNum E)) ]
             -}
             ]
-        , div (onClick (Submit False) :: modal model.isOpen)
+        , div (onClick (Submit False) :: modal model.isResultOpen)
             [ div [ class "modal-background" ] []
             , div [ class "modal-content modal-card" ]
                 [ header [ class "modal-card-head" ]
@@ -281,6 +287,24 @@ view model =
                                 ++ create2ndResult model.answers
                                 ++ [ createResultGraph model.answers ]
                             )
+                        ]
+                    ]
+                , footer [ class "modal-card-foot" ]
+                    [ button [ class "button modal-card-close" ] [ text "閉じる" ]
+                    ]
+                ]
+            ]
+        , div (onClick (Confirm False) :: modal model.isTendacyOpen)
+            [ div [ class "modal-background" ] []
+            , div [ class "modal-content modal-card" ]
+                [ header [ class "modal-card-head" ]
+                    [ p [ class "modal-card-title" ] [ text "性向一覧" ]
+                    , button [ class "modal-button-close delete" ] []
+                    , br [] []
+                    ]
+                , section [ class "modal-card-body" ]
+                    [ div [ class "columns" ]
+                        [ div [ class "column" ] ([ A, B, C, D, E ] |> List.map makeResultView)
                         ]
                     ]
                 , footer [ class "modal-card-foot" ]
