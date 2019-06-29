@@ -321,24 +321,18 @@ create1stResult a =
     lm
         |> List.map
             (\minister ->
-                div [ class "box columns content" ]
-                    [ div [ class "column" ]
-                        [ div [ class "level" ]
-                            [ div [ class "level-left" ]
-                                [ figure [ class "level-item image" ]
-                                    [ img [ src ("./img/" ++ ministerToString minister ++ ".svg"), alt (ministerToString minister) ] []
-                                    ]
-                                , span [ class "level-item subtitle is-3" ] [ text (ministerToText minister) ]
-                                ]
+                div [ class "box columns content is-vcentered" ]
+                    [ div [ class "column is-one-third" ]
+                        [ span [ class "level-item subtitle is-3" ] [ text (ministerToText minister) ]
+                        , figure [ class "level-item image" ]
+                            [ img [ src ("./img/" ++ ministerToString minister ++ ".svg"), alt (ministerToString minister) ] []
                             ]
-                        , div [ class "columns" ]
-                            [ div [ class "column" ]
-                                [ span [ class "tag" ] [ text "特徴" ]
-                                , ministerProperty minister
-                                , span [ class "tag" ] [ text "弱点" ]
-                                , ministerWeekPoint minister
-                                ]
-                            ]
+                        ]
+                    , div [ class "column" ]
+                        [ span [ class "tag" ] [ text "特徴" ]
+                        , ministerProperty minister
+                        , span [ class "tag" ] [ text "弱点" ]
+                        , ministerWeekPoint minister
                         ]
                     ]
             )
