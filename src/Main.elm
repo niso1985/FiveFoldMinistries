@@ -19,7 +19,7 @@ main =
 
 
 type alias Model =
-    { answers : Array MinisterType
+    { answers : Array ResultType
     , isResultOpen : Bool
     , isTendacyOpen : Bool
     }
@@ -33,7 +33,7 @@ init =
     }
 
 
-type MinisterType
+type ResultType
     = A
     | B
     | C
@@ -42,8 +42,8 @@ type MinisterType
     | None
 
 
-ministerToString : MinisterType -> String
-ministerToString m =
+resultToString : ResultType -> String
+resultToString m =
     case m of
         A ->
             "Apostles"
@@ -64,8 +64,8 @@ ministerToString m =
             ""
 
 
-stringToMinister : String -> MinisterType
-stringToMinister str =
+stringToResult : String -> ResultType
+stringToResult str =
     case str of
         "Apostles" ->
             A
@@ -86,8 +86,8 @@ stringToMinister str =
             None
 
 
-ministerToText : MinisterType -> String
-ministerToText m =
+resultToText : ResultType -> String
+resultToText m =
     case m of
         A ->
             "使徒"
@@ -108,7 +108,7 @@ ministerToText m =
             "エラーが発生しました。"
 
 
-getSelectedNum : MinisterType -> Array MinisterType -> Int
+getSelectedNum : ResultType -> Array ResultType -> Int
 getSelectedNum check a =
     a
         |> Array.foldl
@@ -122,8 +122,8 @@ getSelectedNum check a =
             0
 
 
-findNo1SelectedMinisterType : Array MinisterType -> List MinisterType
-findNo1SelectedMinisterType a =
+findNo1SelectedResultType : Array ResultType -> List ResultType
+findNo1SelectedResultType a =
     let
         item =
             [ A, B, C, D, E ]
@@ -146,8 +146,8 @@ sortByFirst =
     List.sortBy Tuple.first >> List.reverse
 
 
-findNo2SelectedMinisterType : Array MinisterType -> List MinisterType
-findNo2SelectedMinisterType a =
+findNo2SelectedResultType : Array ResultType -> List ResultType
+findNo2SelectedResultType a =
     let
         item =
             [ A, B, C, D, E ]
@@ -189,7 +189,7 @@ update : Msg -> Model -> Model
 update msg model =
     case msg of
         Select index str ->
-            { model | answers = model.answers |> Array.set index (stringToMinister str) }
+            { model | answers = model.answers |> Array.set index (stringToResult str) }
 
         Submit submitting ->
             { model | isResultOpen = submitting }
@@ -315,15 +315,15 @@ view model =
         ]
 
 
-row : Int -> String -> String -> MinisterType -> MinisterType -> List (Html Msg)
+row : Int -> String -> String -> ResultType -> ResultType -> List (Html Msg)
 row index q1 q2 m1 m2 =
     [ tr []
         [ th [ rowspan 2, style "vertical-align" "middle" ] [ text (String.fromInt index) ]
-        , td [] [ input [ type_ "radio", name (String.fromInt index), value (ministerToString m1), onInput (Select (index - 1)) ] [] ]
+        , td [] [ input [ type_ "radio", name (String.fromInt index), value (resultToString m1), onInput (Select (index - 1)) ] [] ]
         , td [] [ text q1 ]
         ]
     , tr []
-        [ td [] [ input [ type_ "radio", name (String.fromInt index), value (ministerToString m2), onInput (Select (index - 1)) ] [] ]
+        [ td [] [ input [ type_ "radio", name (String.fromInt index), value (resultToString m2), onInput (Select (index - 1)) ] [] ]
         , td [] [ text q2 ]
         ]
     ]
@@ -338,38 +338,38 @@ modal isOpen =
         [ class "modal modal-fx-3dFlipHorizontal" ]
 
 
-makeResultView : MinisterType -> Html msg
-makeResultView minister =
+makeResultView : ResultType -> Html msg
+makeResultView result =
     div [ class "box columns content is-vcentered", style "margin-bottom" "30px" ]
         [ div [ class "column is-one-third" ]
-            [ span [ class "level-item subtitle is-3" ] [ text (ministerToText minister) ]
+            [ span [ class "level-item subtitle is-3" ] [ text (resultToText result) ]
             , figure [ class "level-item image is-1by1" ]
-                [ img [ src ("./img/" ++ ministerToString minister ++ ".svg"), alt (ministerToString minister) ] []
+                [ img [ src ("./img/" ++ resultToString result ++ ".svg"), alt (resultToString result) ] []
                 ]
             ]
         , div [ class "column" ]
             [ span [ class "tag" ] [ text "特徴" ]
-            , ministerProperty minister
+            , resultProperty result
             , span [ class "tag" ] [ text "弱点" ]
-            , ministerWeekPoint minister
+            , resultWeekPoint result
             ]
         ]
 
 
-create1stResult : Array MinisterType -> List (Html msg)
+create1stResult : Array ResultType -> List (Html msg)
 create1stResult a =
     let
         lm =
-            findNo1SelectedMinisterType a
+            findNo1SelectedResultType a
     in
     lm |> List.map makeResultView
 
 
-create2ndResult : Array MinisterType -> List (Html msg)
+create2ndResult : Array ResultType -> List (Html msg)
 create2ndResult a =
     let
         lm =
-            findNo2SelectedMinisterType a
+            findNo2SelectedResultType a
     in
     if List.member None lm then
         [ div [ class "columns" ] [] ]
@@ -379,8 +379,8 @@ create2ndResult a =
             :: (lm |> List.map makeResultView)
 
 
-ministerProperty : MinisterType -> Html msg
-ministerProperty m =
+resultProperty : ResultType -> Html msg
+resultProperty m =
     case m of
         A ->
             ul []
@@ -427,8 +427,8 @@ ministerProperty m =
                 ]
 
 
-ministerWeekPoint : MinisterType -> Html msg
-ministerWeekPoint m =
+resultWeekPoint : ResultType -> Html msg
+resultWeekPoint m =
     case m of
         A ->
             ul [] [ li [] [ text "支配的で威圧的になりやすい" ] ]
@@ -449,24 +449,24 @@ ministerWeekPoint m =
             ul [] [ li [] [ text "エラー" ] ]
 
 
-createResultGraph : Array MinisterType -> Html msg
+createResultGraph : Array ResultType -> Html msg
 createResultGraph a =
     let
         content =
-            [ A, B, C, D, E ] |> List.map (\m -> ( m, getSelectedNum m a )) |> List.map createMinisterGraph
+            [ A, B, C, D, E ] |> List.map (\m -> ( m, getSelectedNum m a )) |> List.map createResultGraphItem
     in
     nav [ class "level is-mobile" ] content
 
 
-createMinisterGraph : ( MinisterType, Int ) -> Html msg
-createMinisterGraph ( m, num ) =
+createResultGraphItem : ( ResultType, Int ) -> Html msg
+createResultGraphItem ( m, num ) =
     let
         percentage =
             num * 100 // 12
     in
     div [ class "level-item has-text-centered" ]
         [ div []
-            [ p [ class "heading" ] [ text (ministerToText m) ]
+            [ p [ class "heading" ] [ text (resultToText m) ]
             , p [ class "title" ] [ text ((percentage |> String.fromInt) ++ "%") ]
             ]
         ]

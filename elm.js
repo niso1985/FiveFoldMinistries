@@ -4619,7 +4619,7 @@ var author$project$Main$B = 1;
 var author$project$Main$C = 2;
 var author$project$Main$D = 3;
 var author$project$Main$E = 4;
-var author$project$Main$stringToMinister = function (str) {
+var author$project$Main$stringToResult = function (str) {
 	switch (str) {
 		case 'Apostles':
 			return 0;
@@ -4700,7 +4700,7 @@ var author$project$Main$update = F2(
 						j: A3(
 							elm$core$Array$set,
 							index,
-							author$project$Main$stringToMinister(str),
+							author$project$Main$stringToResult(str),
 							model.j)
 					});
 			case 1:
@@ -5403,7 +5403,7 @@ var elm_community$dict_extra$Dict$Extra$groupBy = F2(
 			elm$core$Dict$empty,
 			list);
 	});
-var author$project$Main$findNo1SelectedMinisterType = function (a) {
+var author$project$Main$findNo1SelectedResultType = function (a) {
 	var item = elm$core$List$head(
 		author$project$Main$sortByFirst(
 			elm$core$Dict$toList(
@@ -5677,7 +5677,7 @@ var elm$html$Html$li = _VirtualDom_node('li');
 var elm$virtual_dom$VirtualDom$text = _VirtualDom_text;
 var elm$html$Html$text = elm$virtual_dom$VirtualDom$text;
 var elm$html$Html$ul = _VirtualDom_node('ul');
-var author$project$Main$ministerProperty = function (m) {
+var author$project$Main$resultProperty = function (m) {
 	switch (m) {
 		case 0:
 			return A2(
@@ -5863,7 +5863,7 @@ var author$project$Main$ministerProperty = function (m) {
 					]));
 	}
 };
-var author$project$Main$ministerToString = function (m) {
+var author$project$Main$resultToString = function (m) {
 	switch (m) {
 		case 0:
 			return 'Apostles';
@@ -5879,7 +5879,7 @@ var author$project$Main$ministerToString = function (m) {
 			return '';
 	}
 };
-var author$project$Main$ministerToText = function (m) {
+var author$project$Main$resultToText = function (m) {
 	switch (m) {
 		case 0:
 			return '使徒';
@@ -5895,7 +5895,7 @@ var author$project$Main$ministerToText = function (m) {
 			return 'エラーが発生しました。';
 	}
 };
-var author$project$Main$ministerWeekPoint = function (m) {
+var author$project$Main$resultWeekPoint = function (m) {
 	switch (m) {
 		case 0:
 			return A2(
@@ -6005,7 +6005,7 @@ var elm$html$Html$Attributes$src = function (url) {
 };
 var elm$virtual_dom$VirtualDom$style = _VirtualDom_style;
 var elm$html$Html$Attributes$style = elm$virtual_dom$VirtualDom$style;
-var author$project$Main$makeResultView = function (minister) {
+var author$project$Main$makeResultView = function (result) {
 	return A2(
 		elm$html$Html$div,
 		_List_fromArray(
@@ -6032,7 +6032,7 @@ var author$project$Main$makeResultView = function (minister) {
 						_List_fromArray(
 							[
 								elm$html$Html$text(
-								author$project$Main$ministerToText(minister))
+								author$project$Main$resultToText(result))
 							])),
 						A2(
 						elm$html$Html$figure,
@@ -6047,9 +6047,9 @@ var author$project$Main$makeResultView = function (minister) {
 								_List_fromArray(
 									[
 										elm$html$Html$Attributes$src(
-										'./img/' + (author$project$Main$ministerToString(minister) + '.svg')),
+										'./img/' + (author$project$Main$resultToString(result) + '.svg')),
 										elm$html$Html$Attributes$alt(
-										author$project$Main$ministerToString(minister))
+										author$project$Main$resultToString(result))
 									]),
 								_List_Nil)
 							]))
@@ -6072,7 +6072,7 @@ var author$project$Main$makeResultView = function (minister) {
 							[
 								elm$html$Html$text('特徴')
 							])),
-						author$project$Main$ministerProperty(minister),
+						author$project$Main$resultProperty(result),
 						A2(
 						elm$html$Html$span,
 						_List_fromArray(
@@ -6083,12 +6083,12 @@ var author$project$Main$makeResultView = function (minister) {
 							[
 								elm$html$Html$text('弱点')
 							])),
-						author$project$Main$ministerWeekPoint(minister)
+						author$project$Main$resultWeekPoint(result)
 					]))
 			]));
 };
 var author$project$Main$create1stResult = function (a) {
-	var lm = author$project$Main$findNo1SelectedMinisterType(a);
+	var lm = author$project$Main$findNo1SelectedResultType(a);
 	return A2(elm$core$List$map, author$project$Main$makeResultView, lm);
 };
 var elm$core$List$takeReverse = F3(
@@ -6217,7 +6217,7 @@ var elm$core$List$take = F2(
 	function (n, list) {
 		return A3(elm$core$List$takeFast, 0, n, list);
 	});
-var author$project$Main$findNo2SelectedMinisterType = function (a) {
+var author$project$Main$findNo2SelectedResultType = function (a) {
 	var item = elm$core$List$head(
 		elm$core$List$reverse(
 			A2(
@@ -6288,7 +6288,7 @@ var elm$core$List$member = F2(
 	});
 var elm$html$Html$p = _VirtualDom_node('p');
 var author$project$Main$create2ndResult = function (a) {
-	var lm = author$project$Main$findNo2SelectedMinisterType(a);
+	var lm = author$project$Main$findNo2SelectedResultType(a);
 	return A2(elm$core$List$member, 5, lm) ? _List_fromArray(
 		[
 			A2(
@@ -6312,7 +6312,7 @@ var author$project$Main$create2ndResult = function (a) {
 				])),
 		A2(elm$core$List$map, author$project$Main$makeResultView, lm));
 };
-var author$project$Main$createMinisterGraph = function (_n0) {
+var author$project$Main$createResultGraphItem = function (_n0) {
 	var m = _n0.a;
 	var num = _n0.b;
 	var percentage = ((num * 100) / 12) | 0;
@@ -6338,7 +6338,7 @@ var author$project$Main$createMinisterGraph = function (_n0) {
 						_List_fromArray(
 							[
 								elm$html$Html$text(
-								author$project$Main$ministerToText(m))
+								author$project$Main$resultToText(m))
 							])),
 						A2(
 						elm$html$Html$p,
@@ -6358,7 +6358,7 @@ var elm$html$Html$nav = _VirtualDom_node('nav');
 var author$project$Main$createResultGraph = function (a) {
 	var content = A2(
 		elm$core$List$map,
-		author$project$Main$createMinisterGraph,
+		author$project$Main$createResultGraphItem,
 		A2(
 			elm$core$List$map,
 			function (m) {
@@ -6470,7 +6470,7 @@ var author$project$Main$row = F5(
 										elm$html$Html$Attributes$name(
 										elm$core$String$fromInt(index)),
 										elm$html$Html$Attributes$value(
-										author$project$Main$ministerToString(m1)),
+										author$project$Main$resultToString(m1)),
 										elm$html$Html$Events$onInput(
 										author$project$Main$Select(index - 1))
 									]),
@@ -6502,7 +6502,7 @@ var author$project$Main$row = F5(
 										elm$html$Html$Attributes$name(
 										elm$core$String$fromInt(index)),
 										elm$html$Html$Attributes$value(
-										author$project$Main$ministerToString(m2)),
+										author$project$Main$resultToString(m2)),
 										elm$html$Html$Events$onInput(
 										author$project$Main$Select(index - 1))
 									]),
