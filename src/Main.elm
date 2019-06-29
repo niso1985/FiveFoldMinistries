@@ -11,28 +11,41 @@ import Html.Events exposing (..)
 
 main : Program () Model Msg
 main =
-    Browser.sandbox { init = init, update = update, view = view }
+    Browser.element { init = init, update = update, subscriptions = subscriptions, view = view }
+
+
+subscriptions : Model -> Sub Msg
+subscriptions model =
+    Sub.none
 
 
 
 -- MODEL
 
 
+type Viewing
+    = Question
+    | Tendacy
+    | Failure
+    | Loading
+    | Result
+
+
 type alias Model =
     { answers : Array ResultType
-    , isResultOpen : Bool
-    , isTendacyOpen : Bool
+    , viewing : Viewing
     , name : Maybe String
     }
 
 
-init : Model
-init =
-    { answers = Array.repeat 30 None
-    , isResultOpen = False
-    , isTendacyOpen = False
-    , name = Nothing
-    }
+init : () -> ( Model, Cmd Msg )
+init _ =
+    ( { answers = Array.repeat 3 None
+      , viewing = Question
+      , name = Nothing
+      }
+    , Cmd.none
+    )
 
 
 type ResultType
@@ -183,21 +196,30 @@ findNo2SelectedResultType a =
 
 type Msg
     = Select Int String
-    | Submit Bool
-    | Confirm Bool
+    | Submit
+    | NextView Viewing
 
 
-update : Msg -> Model -> Model
+update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         Select index str ->
-            { model | answers = model.answers |> Array.set index (stringToResult str) }
+            ( { model | answers = model.answers |> Array.set index (stringToResult str) }, Cmd.none )
 
-        Submit submitting ->
-            { model | isResultOpen = submitting }
+        Submit ->
+            ( { model | viewing = Loading }, postResult model )
 
-        Confirm confirm ->
-            { model | isTendacyOpen = confirm }
+        NextView v ->
+            ( { model | viewing = v }, Cmd.none )
+
+
+
+-- HTTP
+
+
+postResult : Model -> Cmd Msg
+postResult model =
+    Cmd.none
 
 
 
@@ -210,7 +232,7 @@ view model =
         [ div [ class "container" ]
             [ h1 [ class "title" ] [ text "5役者の賜物の査定" ]
             , p [ class "content" ] [ text "下記1~30には、2つの主張(性向)が併記されています。そのうち、自分のことだと思う方を選んでください。" ]
-            , a [ onClick (Confirm True), class "button", style "margin-bottom" "24px" ] [ text "性向一覧確認" ]
+            , a [ onClick (NextView Tendacy), class "button", style "margin-bottom" "24px" ] [ text "性向一覧確認" ]
             , div [ class "level", style "margin-bottom" "0px" ]
                 [ div [ class "level-left" ]
                     [ p [ class "level-item" ] [ text "名前" ]
@@ -269,7 +291,7 @@ view model =
                      in
                      not (canSubmit model.answers)
                     )
-                , onClick (Submit True)
+                , onClick Submit
                 , class "button"
                 ]
                 [ text "回答" ]
@@ -282,7 +304,7 @@ view model =
                , div [] [ text (String.fromInt (model.answers |> getSelectedNum E)) ]
             -}
             ]
-        , div (onClick (Submit False) :: modal model.isResultOpen)
+        , div (onClick (NextView Question) :: modal (model.viewing == Result))
             [ div [ class "modal-background" ] []
             , div [ class "modal-content modal-card" ]
                 [ header [ class "modal-card-head" ]
@@ -305,7 +327,7 @@ view model =
                     ]
                 ]
             ]
-        , div (onClick (Confirm False) :: modal model.isTendacyOpen)
+        , div (onClick (NextView Question) :: modal (model.viewing == Tendacy))
             [ div [ class "modal-background" ] []
             , div [ class "modal-content modal-card" ]
                 [ header [ class "modal-card-head" ]
