@@ -234,7 +234,7 @@ postResult model =
     Http.request
         { method = "POST"
         , headers = [ Http.header "Accept" "application/json", Http.header "Content-Type" "application/json" ]
-        , url = "https://cors.io/?https://script.google.com/macros/s/AKfycbzHfR6MHPfYz8CLrtGBNPtlAQIbOOyQ_d9E5wLVrMOi1vlc8I4/exec"
+        , url = "https://script.google.com/macros/s/AKfycbzHfR6MHPfYz8CLrtGBNPtlAQIbOOyQ_d9E5wLVrMOi1vlc8I4/exec"
         , body = Http.jsonBody (makeJsonBody model)
         , expect = Http.expectString Response
         , timeout = Nothing
