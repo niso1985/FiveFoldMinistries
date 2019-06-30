@@ -7,30 +7,47 @@ import Dict.Extra exposing (..)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
+import Http exposing (..)
+import Json.Encode exposing (Value)
 
 
 main : Program () Model Msg
 main =
-    Browser.sandbox { init = init, update = update, view = view }
+    Browser.element { init = init, update = update, subscriptions = subscriptions, view = view }
+
+
+subscriptions : Model -> Sub Msg
+subscriptions _ =
+    Sub.none
 
 
 
 -- MODEL
 
 
+type Viewing
+    = Question
+    | Tendacy
+    | Failure
+    | Loading
+    | Result
+
+
 type alias Model =
     { answers : Array ResultType
-    , isResultOpen : Bool
-    , isTendacyOpen : Bool
+    , viewing : Viewing
+    , name : String
     }
 
 
-init : Model
-init =
-    { answers = Array.repeat 30 None
-    , isResultOpen = False
-    , isTendacyOpen = False
-    }
+init : () -> ( Model, Cmd Msg )
+init _ =
+    ( { answers = Array.repeat 30 None
+      , viewing = Question
+      , name = ""
+      }
+    , Cmd.none
+    )
 
 
 type ResultType
@@ -181,21 +198,64 @@ findNo2SelectedResultType a =
 
 type Msg
     = Select Int String
-    | Submit Bool
-    | Confirm Bool
+    | InputName String
+    | Submit
+    | NextView Viewing
+    | Response (Result Http.Error String)
 
 
-update : Msg -> Model -> Model
+update : Msg -> Model -> ( Model, Cmd Msg )
 update msg model =
     case msg of
         Select index str ->
-            { model | answers = model.answers |> Array.set index (stringToResult str) }
+            ( { model | answers = model.answers |> Array.set index (stringToResult str) }, Cmd.none )
 
-        Submit submitting ->
-            { model | isResultOpen = submitting }
+        InputName str ->
+            ( { model | name = str }, Cmd.none )
 
-        Confirm confirm ->
-            { model | isTendacyOpen = confirm }
+        Submit ->
+            if model.name == "" then
+                ( { model | viewing = Result }, Cmd.none )
+
+            else
+                ( { model | viewing = Loading }, postResult model )
+
+        NextView v ->
+            ( { model | viewing = v }, Cmd.none )
+
+        Response r ->
+            case r of
+                Ok _ ->
+                    ( { model | viewing = Result }, Cmd.none )
+
+                Err _ ->
+                    ( { model | viewing = Failure }, Cmd.none )
+
+
+
+-- HTTP
+
+
+postResult : Model -> Cmd Msg
+postResult model =
+    Http.request
+        { method = "POST"
+        , headers = [ Http.header "Accept" "application/json", Http.header "Content-Type" "application/json" ]
+        , url = "/api/"
+        , body = Http.jsonBody (makeJsonBody model)
+        , expect = Http.expectString Response
+        , timeout = Nothing
+        , tracker = Nothing
+        }
+
+
+makeJsonBody : Model -> Json.Encode.Value
+makeJsonBody model =
+    let
+        ansNums =
+            [ A, B, C, D, E ] |> List.map (\m -> ( resultToString m, Json.Encode.int (getSelectedNum m model.answers) ))
+    in
+    Json.Encode.object (( "name", Json.Encode.string model.name ) :: ansNums)
 
 
 
@@ -208,7 +268,23 @@ view model =
         [ div [ class "container" ]
             [ h1 [ class "title" ] [ text "5役者の賜物の査定" ]
             , p [ class "content" ] [ text "下記1~30には、2つの主張(性向)が併記されています。そのうち、自分のことだと思う方を選んでください。" ]
-            , a [ onClick (Confirm True), class "button" ] [ text "性向一覧確認" ]
+            , div [ class "level" ]
+                [ div [ class "level-left" ]
+                    [ a [ onClick (NextView Tendacy), class "button level-item" ] [ text "性向一覧確認" ]
+                    , a [ class "button level-item", href "https://docs.google.com/spreadsheets/d/e/2PACX-1vQZC30ieu6mK5MD7Lne1DQT9TAWdHxhJHJo_6GaGYdKK8r7gPmX1U_DPwdq6A96g5Bk60udub05jYwq/pubhtml", target "_blank" ] [ text "他の人の結果を見る(HTML)" ]
+                    , a [ class "button level-item", href "https://docs.google.com/spreadsheets/d/1Idl-EoBYmy7eSlYtQ0PNwy9-FZXXbWdYW6JjEdxu9d4/edit?usp=sharing", target "_blank" ] [ text "他の人の結果を見る(スプレッドシート)" ]
+                    ]
+                ]
+            , div [ class "level", style "margin-bottom" "0px" ]
+                [ div [ class "level-left" ]
+                    [ p [ class "level-item" ] [ text "名前" ]
+                    , div [ class "level-item" ]
+                        [ input [ class "input", placeholder "名前", value model.name, onInput InputName ] []
+                        ]
+                    ]
+                ]
+            , p [ class "content is-small", style "margin-bottom" "0px" ] [ text "名前を入力すると結果が保存されます。結果を保存したくない場合は名前を入力しないでください。" ]
+            , p [ class "content is-small" ] [ text "結果は１ヶ月経過すると自動的に消去されます。" ]
             , table [ class "table" ]
                 [ thead []
                     [ tr []
@@ -258,8 +334,12 @@ view model =
                      in
                      not (canSubmit model.answers)
                     )
-                , onClick (Submit True)
-                , class "button"
+                , onClick Submit
+                , if model.viewing == Loading then
+                    class "button is-loading"
+
+                  else
+                    class "button"
                 ]
                 [ text "回答" ]
 
@@ -271,45 +351,77 @@ view model =
                , div [] [ text (String.fromInt (model.answers |> getSelectedNum E)) ]
             -}
             ]
-        , div (onClick (Submit False) :: modal model.isResultOpen)
-            [ div [ class "modal-background" ] []
-            , div [ class "modal-content modal-card" ]
-                [ header [ class "modal-card-head" ]
-                    [ p [ class "modal-card-title" ] [ text "診断結果" ]
-                    , button [ class "modal-button-close delete" ] []
-                    , br [] []
-                    ]
-                , section [ class "modal-card-body" ]
-                    [ div [ class "columns" ]
-                        [ div [ class "column" ]
-                            (p [ class "content is-size-5" ] [ text "あなたの一次的な5役者の賜物は・・・" ]
-                                :: create1stResult model.answers
-                                ++ create2ndResult model.answers
-                                ++ [ createResultGraph model.answers ]
-                            )
-                        ]
-                    ]
-                , footer [ class "modal-card-foot" ]
-                    [ button [ class "button modal-card-close" ] [ text "閉じる" ]
+        , viewResult model
+        , viewTendacy model
+        , viewFailure model
+        ]
+
+
+viewResult : Model -> Html Msg
+viewResult model =
+    div (onClick (NextView Question) :: modal (model.viewing == Result))
+        [ div [ class "modal-background" ] []
+        , div [ class "modal-content modal-card" ]
+            [ Html.header [ class "modal-card-head" ]
+                [ p [ class "modal-card-title" ] [ text "診断結果" ]
+                , button [ class "modal-button-close delete" ] []
+                , br [] []
+                ]
+            , section [ class "modal-card-body" ]
+                [ div [ class "columns" ]
+                    [ div [ class "column" ]
+                        (p [ class "content is-size-5" ] [ text "あなたの一次的な5役者の賜物は・・・" ]
+                            :: create1stResult model.answers
+                            ++ create2ndResult model.answers
+                            ++ [ createResultGraph model.answers ]
+                        )
                     ]
                 ]
+            , footer [ class "modal-card-foot" ]
+                [ button [ class "button modal-card-close" ] [ text "閉じる" ]
+                ]
             ]
-        , div (onClick (Confirm False) :: modal model.isTendacyOpen)
-            [ div [ class "modal-background" ] []
-            , div [ class "modal-content modal-card" ]
-                [ header [ class "modal-card-head" ]
-                    [ p [ class "modal-card-title" ] [ text "性向一覧" ]
-                    , button [ class "modal-button-close delete" ] []
-                    , br [] []
+        ]
+
+
+viewTendacy : Model -> Html Msg
+viewTendacy model =
+    div (onClick (NextView Question) :: modal (model.viewing == Tendacy))
+        [ div [ class "modal-background" ] []
+        , div [ class "modal-content modal-card" ]
+            [ Html.header [ class "modal-card-head" ]
+                [ p [ class "modal-card-title" ] [ text "性向一覧" ]
+                , button [ class "modal-button-close delete" ] []
+                , br [] []
+                ]
+            , section [ class "modal-card-body" ]
+                [ div [ class "columns" ]
+                    [ div [ class "column" ] ([ A, B, C, D, E ] |> List.map makeResultView)
                     ]
-                , section [ class "modal-card-body" ]
-                    [ div [ class "columns" ]
-                        [ div [ class "column" ] ([ A, B, C, D, E ] |> List.map makeResultView)
-                        ]
-                    ]
-                , footer [ class "modal-card-foot" ]
-                    [ button [ class "button modal-card-close" ] [ text "閉じる" ]
-                    ]
+                ]
+            , footer [ class "modal-card-foot" ]
+                [ button [ class "button modal-card-close" ] [ text "閉じる" ]
+                ]
+            ]
+        ]
+
+
+viewFailure : Model -> Html Msg
+viewFailure model =
+    div (onClick (NextView Question) :: modal (model.viewing == Failure))
+        [ div [ class "modal-background" ] []
+        , div [ class "modal-content modal-card" ]
+            [ Html.header [ class "modal-card-head" ]
+                [ p [ class "modal-card-title has-text-danger" ] [ text "エラーが発生しました！！" ]
+                , button [ class "modal-button-close delete" ] []
+                , br [] []
+                ]
+            , section [ class "modal-card-body" ]
+                [ p [ class "content" ] [ text "サーバーとの通信エラーが発生しました。" ]
+                , p [ class "content" ] [ text "名前を未入力にして試すか、時間を置いてもう一度試してみてください。" ]
+                ]
+            , footer [ class "modal-card-foot" ]
+                [ button [ class "button modal-card-close" ] [ text "閉じる" ]
                 ]
             ]
         ]
