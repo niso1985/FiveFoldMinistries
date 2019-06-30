@@ -7,6 +7,9 @@ import Dict.Extra exposing (..)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
+import Http exposing (..)
+import Json.Decode exposing (Decoder, field, string)
+import Json.Encode exposing (Value)
 
 
 main : Program () Model Msg
@@ -15,7 +18,7 @@ main =
 
 
 subscriptions : Model -> Sub Msg
-subscriptions model =
+subscriptions _ =
     Sub.none
 
 
@@ -198,6 +201,7 @@ type Msg
     = Select Int String
     | Submit
     | NextView Viewing
+    | Response (Result Http.Error String)
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -212,6 +216,14 @@ update msg model =
         NextView v ->
             ( { model | viewing = v }, Cmd.none )
 
+        Response r ->
+            case r of
+                Ok _ ->
+                    ( { model | viewing = Result }, Cmd.none )
+
+                Err _ ->
+                    ( { model | viewing = Failure }, Cmd.none )
+
 
 
 -- HTTP
@@ -219,7 +231,24 @@ update msg model =
 
 postResult : Model -> Cmd Msg
 postResult model =
-    Cmd.none
+    Http.request
+        { method = "POST"
+        , headers = [ Http.header "Accept" "application/json", Http.header "Content-Type" "application/json" ]
+        , url = "https://cors.io/?https://script.google.com/macros/s/AKfycbzHfR6MHPfYz8CLrtGBNPtlAQIbOOyQ_d9E5wLVrMOi1vlc8I4/exec"
+        , body = Http.jsonBody (makeJsonBody model)
+        , expect = Http.expectString Response
+        , timeout = Nothing
+        , tracker = Nothing
+        }
+
+
+makeJsonBody : Model -> Json.Encode.Value
+makeJsonBody model =
+    let
+        ansNums =
+            [ A, B, C, D, E ] |> List.map (\m -> ( resultToString m, Json.Encode.int (getSelectedNum m model.answers) ))
+    in
+    Json.Encode.object (( "name", Json.Encode.string (Maybe.withDefault "" model.name) ) :: ansNums)
 
 
 
@@ -307,7 +336,7 @@ view model =
         , div (onClick (NextView Question) :: modal (model.viewing == Result))
             [ div [ class "modal-background" ] []
             , div [ class "modal-content modal-card" ]
-                [ header [ class "modal-card-head" ]
+                [ Html.header [ class "modal-card-head" ]
                     [ p [ class "modal-card-title" ] [ text "診断結果" ]
                     , button [ class "modal-button-close delete" ] []
                     , br [] []
@@ -330,7 +359,7 @@ view model =
         , div (onClick (NextView Question) :: modal (model.viewing == Tendacy))
             [ div [ class "modal-background" ] []
             , div [ class "modal-content modal-card" ]
-                [ header [ class "modal-card-head" ]
+                [ Html.header [ class "modal-card-head" ]
                     [ p [ class "modal-card-title" ] [ text "性向一覧" ]
                     , button [ class "modal-button-close delete" ] []
                     , br [] []
