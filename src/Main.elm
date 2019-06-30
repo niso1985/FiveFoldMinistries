@@ -42,7 +42,7 @@ type alias Model =
 
 init : () -> ( Model, Cmd Msg )
 init _ =
-    ( { answers = Array.repeat 3 None
+    ( { answers = Array.repeat 30 None
       , viewing = Question
       , name = ""
       }
@@ -268,7 +268,13 @@ view model =
         [ div [ class "container" ]
             [ h1 [ class "title" ] [ text "5役者の賜物の査定" ]
             , p [ class "content" ] [ text "下記1~30には、2つの主張(性向)が併記されています。そのうち、自分のことだと思う方を選んでください。" ]
-            , a [ onClick (NextView Tendacy), class "button", style "margin-bottom" "24px" ] [ text "性向一覧確認" ]
+            , div [ class "level" ]
+                [ div [ class "level-left" ]
+                    [ a [ onClick (NextView Tendacy), class "button level-item" ] [ text "性向一覧確認" ]
+                    , a [ class "button level-item", href "https://docs.google.com/spreadsheets/d/e/2PACX-1vQZC30ieu6mK5MD7Lne1DQT9TAWdHxhJHJo_6GaGYdKK8r7gPmX1U_DPwdq6A96g5Bk60udub05jYwq/pubhtml", target "_blank" ] [ text "他の人の結果を見る(HTML)" ]
+                    , a [ class "button level-item", href "https://docs.google.com/spreadsheets/d/1Idl-EoBYmy7eSlYtQ0PNwy9-FZXXbWdYW6JjEdxu9d4/edit?usp=sharing", target "_blank" ] [ text "他の人の結果を見る(スプレッドシート)" ]
+                    ]
+                ]
             , div [ class "level", style "margin-bottom" "0px" ]
                 [ div [ class "level-left" ]
                     [ p [ class "level-item" ] [ text "名前" ]
