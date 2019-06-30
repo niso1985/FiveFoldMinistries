@@ -4785,7 +4785,6 @@ var elm$core$Array$repeat = F2(
 				return e;
 			});
 	});
-var elm$core$Maybe$Nothing = {$: 'Nothing'};
 var elm$core$Basics$True = {$: 'True'};
 var elm$core$Result$isOk = function (result) {
 	if (result.$ === 'Ok') {
@@ -4797,6 +4796,7 @@ var elm$core$Result$isOk = function (result) {
 var elm$core$Maybe$Just = function (a) {
 	return {$: 'Just', a: a};
 };
+var elm$core$Maybe$Nothing = {$: 'Nothing'};
 var elm$core$Result$Err = function (a) {
 	return {$: 'Err', a: a};
 };
@@ -5014,7 +5014,7 @@ var author$project$Main$init = function (_n0) {
 	return _Utils_Tuple2(
 		{
 			answers: A2(elm$core$Array$repeat, 3, author$project$Main$None),
-			name: elm$core$Maybe$Nothing,
+			name: '',
 			viewing: author$project$Main$Question
 		},
 		elm$core$Platform$Cmd$none);
@@ -5152,15 +5152,6 @@ var elm$core$List$map = F2(
 			_List_Nil,
 			xs);
 	});
-var elm$core$Maybe$withDefault = F2(
-	function (_default, maybe) {
-		if (maybe.$ === 'Just') {
-			var value = maybe.a;
-			return value;
-		} else {
-			return _default;
-		}
-	});
 var elm$json$Json$Encode$int = _Json_wrap;
 var elm$json$Json$Encode$object = function (pairs) {
 	return _Json_wrap(
@@ -5192,8 +5183,7 @@ var author$project$Main$makeJsonBody = function (model) {
 			elm$core$List$cons,
 			_Utils_Tuple2(
 				'name',
-				elm$json$Json$Encode$string(
-					A2(elm$core$Maybe$withDefault, '', model.name))),
+				elm$json$Json$Encode$string(model.name)),
 			ansNums));
 };
 var elm$core$Basics$composeR = F3(
@@ -6122,8 +6112,19 @@ var author$project$Main$update = F2(
 								model.answers)
 						}),
 					elm$core$Platform$Cmd$none);
-			case 'Submit':
+			case 'InputName':
+				var str = msg.a;
 				return _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{name: str}),
+					elm$core$Platform$Cmd$none);
+			case 'Submit':
+				return (model.name === '') ? _Utils_Tuple2(
+					_Utils_update(
+						model,
+						{viewing: author$project$Main$Result}),
+					elm$core$Platform$Cmd$none) : _Utils_Tuple2(
 					_Utils_update(
 						model,
 						{viewing: author$project$Main$Loading}),
@@ -6152,6 +6153,9 @@ var author$project$Main$update = F2(
 				}
 		}
 	});
+var author$project$Main$InputName = function (a) {
+	return {$: 'InputName', a: a};
+};
 var author$project$Main$NextView = function (a) {
 	return {$: 'NextView', a: a};
 };
@@ -6179,6 +6183,15 @@ var elm$core$Maybe$map = F2(
 				f(value));
 		} else {
 			return elm$core$Maybe$Nothing;
+		}
+	});
+var elm$core$Maybe$withDefault = F2(
+	function (_default, maybe) {
+		if (maybe.$ === 'Just') {
+			var value = maybe.a;
+			return value;
+		} else {
+			return _default;
 		}
 	});
 var elm_community$dict_extra$Dict$Extra$groupBy = F2(
@@ -7229,7 +7242,9 @@ var author$project$Main$view = function (model) {
 												_List_fromArray(
 													[
 														elm$html$Html$Attributes$class('input'),
-														elm$html$Html$Attributes$placeholder('名前')
+														elm$html$Html$Attributes$placeholder('名前'),
+														elm$html$Html$Attributes$value(model.name),
+														elm$html$Html$Events$onInput(author$project$Main$InputName)
 													]),
 												_List_Nil)
 											]))

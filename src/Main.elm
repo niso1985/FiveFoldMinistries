@@ -215,7 +215,11 @@ update msg model =
             ( { model | name = str }, Cmd.none )
 
         Submit ->
-            ( { model | viewing = Loading }, postResult model )
+            if model.name == "" then
+                ( { model | viewing = Result }, Cmd.none )
+
+            else
+                ( { model | viewing = Loading }, postResult model )
 
         NextView v ->
             ( { model | viewing = v }, Cmd.none )
