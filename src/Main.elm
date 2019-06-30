@@ -278,7 +278,8 @@ view model =
                         ]
                     ]
                 ]
-            , p [ class "content is-small" ] [ text "名前を入力するとデータが保存されます。データを保存したくない場合は名前を入力しないでください。" ]
+            , p [ class "content is-small", style "margin-bottom" "0px" ] [ text "名前を入力すると結果が保存されます。結果を保存したくない場合は名前を入力しないでください。" ]
+            , p [ class "content is-small" ] [ text "結果は１ヶ月経過すると自動的に消去されます。" ]
             , table [ class "table" ]
                 [ thead []
                     [ tr []
@@ -329,7 +330,11 @@ view model =
                      not (canSubmit model.answers)
                     )
                 , onClick Submit
-                , class "button"
+                , if model.viewing == Loading then
+                    class "button is-loading"
+
+                  else
+                    class "button"
                 ]
                 [ text "回答" ]
 
@@ -341,45 +346,55 @@ view model =
                , div [] [ text (String.fromInt (model.answers |> getSelectedNum E)) ]
             -}
             ]
-        , div (onClick (NextView Question) :: modal (model.viewing == Result))
-            [ div [ class "modal-background" ] []
-            , div [ class "modal-content modal-card" ]
-                [ Html.header [ class "modal-card-head" ]
-                    [ p [ class "modal-card-title" ] [ text "診断結果" ]
-                    , button [ class "modal-button-close delete" ] []
-                    , br [] []
-                    ]
-                , section [ class "modal-card-body" ]
-                    [ div [ class "columns" ]
-                        [ div [ class "column" ]
-                            (p [ class "content is-size-5" ] [ text "あなたの一次的な5役者の賜物は・・・" ]
-                                :: create1stResult model.answers
-                                ++ create2ndResult model.answers
-                                ++ [ createResultGraph model.answers ]
-                            )
-                        ]
-                    ]
-                , footer [ class "modal-card-foot" ]
-                    [ button [ class "button modal-card-close" ] [ text "閉じる" ]
+        , viewResult model
+        , viewTendacy model
+        ]
+
+
+viewResult : Model -> Html Msg
+viewResult model =
+    div (onClick (NextView Question) :: modal (model.viewing == Result))
+        [ div [ class "modal-background" ] []
+        , div [ class "modal-content modal-card" ]
+            [ Html.header [ class "modal-card-head" ]
+                [ p [ class "modal-card-title" ] [ text "診断結果" ]
+                , button [ class "modal-button-close delete" ] []
+                , br [] []
+                ]
+            , section [ class "modal-card-body" ]
+                [ div [ class "columns" ]
+                    [ div [ class "column" ]
+                        (p [ class "content is-size-5" ] [ text "あなたの一次的な5役者の賜物は・・・" ]
+                            :: create1stResult model.answers
+                            ++ create2ndResult model.answers
+                            ++ [ createResultGraph model.answers ]
+                        )
                     ]
                 ]
+            , footer [ class "modal-card-foot" ]
+                [ button [ class "button modal-card-close" ] [ text "閉じる" ]
+                ]
             ]
-        , div (onClick (NextView Question) :: modal (model.viewing == Tendacy))
-            [ div [ class "modal-background" ] []
-            , div [ class "modal-content modal-card" ]
-                [ Html.header [ class "modal-card-head" ]
-                    [ p [ class "modal-card-title" ] [ text "性向一覧" ]
-                    , button [ class "modal-button-close delete" ] []
-                    , br [] []
+        ]
+
+
+viewTendacy : Model -> Html Msg
+viewTendacy model =
+    div (onClick (NextView Question) :: modal (model.viewing == Tendacy))
+        [ div [ class "modal-background" ] []
+        , div [ class "modal-content modal-card" ]
+            [ Html.header [ class "modal-card-head" ]
+                [ p [ class "modal-card-title" ] [ text "性向一覧" ]
+                , button [ class "modal-button-close delete" ] []
+                , br [] []
+                ]
+            , section [ class "modal-card-body" ]
+                [ div [ class "columns" ]
+                    [ div [ class "column" ] ([ A, B, C, D, E ] |> List.map makeResultView)
                     ]
-                , section [ class "modal-card-body" ]
-                    [ div [ class "columns" ]
-                        [ div [ class "column" ] ([ A, B, C, D, E ] |> List.map makeResultView)
-                        ]
-                    ]
-                , footer [ class "modal-card-foot" ]
-                    [ button [ class "button modal-card-close" ] [ text "閉じる" ]
-                    ]
+                ]
+            , footer [ class "modal-card-foot" ]
+                [ button [ class "button modal-card-close" ] [ text "閉じる" ]
                 ]
             ]
         ]

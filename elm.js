@@ -6161,6 +6161,165 @@ var author$project$Main$NextView = function (a) {
 };
 var author$project$Main$Submit = {$: 'Submit'};
 var author$project$Main$Tendacy = {$: 'Tendacy'};
+var author$project$Main$Select = F2(
+	function (a, b) {
+		return {$: 'Select', a: a, b: b};
+	});
+var elm$json$Json$Decode$map = _Json_map1;
+var elm$json$Json$Decode$map2 = _Json_map2;
+var elm$json$Json$Decode$succeed = _Json_succeed;
+var elm$virtual_dom$VirtualDom$toHandlerInt = function (handler) {
+	switch (handler.$) {
+		case 'Normal':
+			return 0;
+		case 'MayStopPropagation':
+			return 1;
+		case 'MayPreventDefault':
+			return 2;
+		default:
+			return 3;
+	}
+};
+var elm$html$Html$input = _VirtualDom_node('input');
+var elm$html$Html$td = _VirtualDom_node('td');
+var elm$virtual_dom$VirtualDom$text = _VirtualDom_text;
+var elm$html$Html$text = elm$virtual_dom$VirtualDom$text;
+var elm$html$Html$th = _VirtualDom_node('th');
+var elm$html$Html$tr = _VirtualDom_node('tr');
+var elm$html$Html$Attributes$stringProperty = F2(
+	function (key, string) {
+		return A2(
+			_VirtualDom_property,
+			key,
+			elm$json$Json$Encode$string(string));
+	});
+var elm$html$Html$Attributes$name = elm$html$Html$Attributes$stringProperty('name');
+var elm$html$Html$Attributes$rowspan = function (n) {
+	return A2(
+		_VirtualDom_attribute,
+		'rowspan',
+		elm$core$String$fromInt(n));
+};
+var elm$virtual_dom$VirtualDom$style = _VirtualDom_style;
+var elm$html$Html$Attributes$style = elm$virtual_dom$VirtualDom$style;
+var elm$html$Html$Attributes$type_ = elm$html$Html$Attributes$stringProperty('type');
+var elm$html$Html$Attributes$value = elm$html$Html$Attributes$stringProperty('value');
+var elm$html$Html$Events$alwaysStop = function (x) {
+	return _Utils_Tuple2(x, true);
+};
+var elm$virtual_dom$VirtualDom$MayStopPropagation = function (a) {
+	return {$: 'MayStopPropagation', a: a};
+};
+var elm$virtual_dom$VirtualDom$on = _VirtualDom_on;
+var elm$html$Html$Events$stopPropagationOn = F2(
+	function (event, decoder) {
+		return A2(
+			elm$virtual_dom$VirtualDom$on,
+			event,
+			elm$virtual_dom$VirtualDom$MayStopPropagation(decoder));
+	});
+var elm$json$Json$Decode$field = _Json_decodeField;
+var elm$json$Json$Decode$at = F2(
+	function (fields, decoder) {
+		return A3(elm$core$List$foldr, elm$json$Json$Decode$field, decoder, fields);
+	});
+var elm$json$Json$Decode$string = _Json_decodeString;
+var elm$html$Html$Events$targetValue = A2(
+	elm$json$Json$Decode$at,
+	_List_fromArray(
+		['target', 'value']),
+	elm$json$Json$Decode$string);
+var elm$html$Html$Events$onInput = function (tagger) {
+	return A2(
+		elm$html$Html$Events$stopPropagationOn,
+		'input',
+		A2(
+			elm$json$Json$Decode$map,
+			elm$html$Html$Events$alwaysStop,
+			A2(elm$json$Json$Decode$map, tagger, elm$html$Html$Events$targetValue)));
+};
+var author$project$Main$row = F5(
+	function (index, q1, q2, m1, m2) {
+		return _List_fromArray(
+			[
+				A2(
+				elm$html$Html$tr,
+				_List_Nil,
+				_List_fromArray(
+					[
+						A2(
+						elm$html$Html$th,
+						_List_fromArray(
+							[
+								elm$html$Html$Attributes$rowspan(2),
+								A2(elm$html$Html$Attributes$style, 'vertical-align', 'middle')
+							]),
+						_List_fromArray(
+							[
+								elm$html$Html$text(
+								elm$core$String$fromInt(index))
+							])),
+						A2(
+						elm$html$Html$td,
+						_List_Nil,
+						_List_fromArray(
+							[
+								A2(
+								elm$html$Html$input,
+								_List_fromArray(
+									[
+										elm$html$Html$Attributes$type_('radio'),
+										elm$html$Html$Attributes$name(
+										elm$core$String$fromInt(index)),
+										elm$html$Html$Attributes$value(
+										author$project$Main$resultToString(m1)),
+										elm$html$Html$Events$onInput(
+										author$project$Main$Select(index - 1))
+									]),
+								_List_Nil)
+							])),
+						A2(
+						elm$html$Html$td,
+						_List_Nil,
+						_List_fromArray(
+							[
+								elm$html$Html$text(q1)
+							]))
+					])),
+				A2(
+				elm$html$Html$tr,
+				_List_Nil,
+				_List_fromArray(
+					[
+						A2(
+						elm$html$Html$td,
+						_List_Nil,
+						_List_fromArray(
+							[
+								A2(
+								elm$html$Html$input,
+								_List_fromArray(
+									[
+										elm$html$Html$Attributes$type_('radio'),
+										elm$html$Html$Attributes$name(
+										elm$core$String$fromInt(index)),
+										elm$html$Html$Attributes$value(
+										author$project$Main$resultToString(m2)),
+										elm$html$Html$Events$onInput(
+										author$project$Main$Select(index - 1))
+									]),
+								_List_Nil)
+							])),
+						A2(
+						elm$html$Html$td,
+						_List_Nil,
+						_List_fromArray(
+							[
+								elm$html$Html$text(q2)
+							]))
+					]))
+			]);
+	});
 var elm$core$List$sortBy = _List_sortBy;
 var author$project$Main$sortByFirst = A2(
 	elm$core$Basics$composeR,
@@ -6252,24 +6411,7 @@ var author$project$Main$findNo1SelectedResultType = function (a) {
 			[author$project$Main$None]);
 	}
 };
-var elm$json$Json$Decode$map = _Json_map1;
-var elm$json$Json$Decode$map2 = _Json_map2;
-var elm$json$Json$Decode$succeed = _Json_succeed;
-var elm$virtual_dom$VirtualDom$toHandlerInt = function (handler) {
-	switch (handler.$) {
-		case 'Normal':
-			return 0;
-		case 'MayStopPropagation':
-			return 1;
-		case 'MayPreventDefault':
-			return 2;
-		default:
-			return 3;
-	}
-};
 var elm$html$Html$li = _VirtualDom_node('li');
-var elm$virtual_dom$VirtualDom$text = _VirtualDom_text;
-var elm$html$Html$text = elm$virtual_dom$VirtualDom$text;
 var elm$html$Html$ul = _VirtualDom_node('ul');
 var author$project$Main$resultProperty = function (m) {
 	switch (m.$) {
@@ -6565,13 +6707,6 @@ var elm$html$Html$div = _VirtualDom_node('div');
 var elm$html$Html$figure = _VirtualDom_node('figure');
 var elm$html$Html$img = _VirtualDom_node('img');
 var elm$html$Html$span = _VirtualDom_node('span');
-var elm$html$Html$Attributes$stringProperty = F2(
-	function (key, string) {
-		return A2(
-			_VirtualDom_property,
-			key,
-			elm$json$Json$Encode$string(string));
-	});
 var elm$html$Html$Attributes$alt = elm$html$Html$Attributes$stringProperty('alt');
 var elm$html$Html$Attributes$class = elm$html$Html$Attributes$stringProperty('className');
 var elm$html$Html$Attributes$src = function (url) {
@@ -6580,8 +6715,6 @@ var elm$html$Html$Attributes$src = function (url) {
 		'src',
 		_VirtualDom_noJavaScriptOrHtmlUri(url));
 };
-var elm$virtual_dom$VirtualDom$style = _VirtualDom_style;
-var elm$html$Html$Attributes$style = elm$virtual_dom$VirtualDom$style;
 var author$project$Main$makeResultView = function (result) {
 	return A2(
 		elm$html$Html$div,
@@ -6962,139 +7095,250 @@ var author$project$Main$modal = function (isOpen) {
 			elm$html$Html$Attributes$class('modal modal-fx-3dFlipHorizontal')
 		]);
 };
-var author$project$Main$Select = F2(
-	function (a, b) {
-		return {$: 'Select', a: a, b: b};
-	});
-var elm$html$Html$input = _VirtualDom_node('input');
-var elm$html$Html$td = _VirtualDom_node('td');
-var elm$html$Html$th = _VirtualDom_node('th');
-var elm$html$Html$tr = _VirtualDom_node('tr');
-var elm$html$Html$Attributes$name = elm$html$Html$Attributes$stringProperty('name');
-var elm$html$Html$Attributes$rowspan = function (n) {
-	return A2(
-		_VirtualDom_attribute,
-		'rowspan',
-		elm$core$String$fromInt(n));
+var elm$html$Html$br = _VirtualDom_node('br');
+var elm$html$Html$button = _VirtualDom_node('button');
+var elm$html$Html$footer = _VirtualDom_node('footer');
+var elm$html$Html$header = _VirtualDom_node('header');
+var elm$html$Html$section = _VirtualDom_node('section');
+var elm$virtual_dom$VirtualDom$Normal = function (a) {
+	return {$: 'Normal', a: a};
 };
-var elm$html$Html$Attributes$type_ = elm$html$Html$Attributes$stringProperty('type');
-var elm$html$Html$Attributes$value = elm$html$Html$Attributes$stringProperty('value');
-var elm$html$Html$Events$alwaysStop = function (x) {
-	return _Utils_Tuple2(x, true);
-};
-var elm$virtual_dom$VirtualDom$MayStopPropagation = function (a) {
-	return {$: 'MayStopPropagation', a: a};
-};
-var elm$virtual_dom$VirtualDom$on = _VirtualDom_on;
-var elm$html$Html$Events$stopPropagationOn = F2(
+var elm$html$Html$Events$on = F2(
 	function (event, decoder) {
 		return A2(
 			elm$virtual_dom$VirtualDom$on,
 			event,
-			elm$virtual_dom$VirtualDom$MayStopPropagation(decoder));
+			elm$virtual_dom$VirtualDom$Normal(decoder));
 	});
-var elm$json$Json$Decode$field = _Json_decodeField;
-var elm$json$Json$Decode$at = F2(
-	function (fields, decoder) {
-		return A3(elm$core$List$foldr, elm$json$Json$Decode$field, decoder, fields);
-	});
-var elm$json$Json$Decode$string = _Json_decodeString;
-var elm$html$Html$Events$targetValue = A2(
-	elm$json$Json$Decode$at,
-	_List_fromArray(
-		['target', 'value']),
-	elm$json$Json$Decode$string);
-var elm$html$Html$Events$onInput = function (tagger) {
+var elm$html$Html$Events$onClick = function (msg) {
 	return A2(
-		elm$html$Html$Events$stopPropagationOn,
-		'input',
-		A2(
-			elm$json$Json$Decode$map,
-			elm$html$Html$Events$alwaysStop,
-			A2(elm$json$Json$Decode$map, tagger, elm$html$Html$Events$targetValue)));
+		elm$html$Html$Events$on,
+		'click',
+		elm$json$Json$Decode$succeed(msg));
 };
-var author$project$Main$row = F5(
-	function (index, q1, q2, m1, m2) {
-		return _List_fromArray(
+var author$project$Main$viewResult = function (model) {
+	return A2(
+		elm$html$Html$div,
+		A2(
+			elm$core$List$cons,
+			elm$html$Html$Events$onClick(
+				author$project$Main$NextView(author$project$Main$Question)),
+			author$project$Main$modal(
+				_Utils_eq(model.viewing, author$project$Main$Result))),
+		_List_fromArray(
 			[
 				A2(
-				elm$html$Html$tr,
-				_List_Nil,
+				elm$html$Html$div,
+				_List_fromArray(
+					[
+						elm$html$Html$Attributes$class('modal-background')
+					]),
+				_List_Nil),
+				A2(
+				elm$html$Html$div,
+				_List_fromArray(
+					[
+						elm$html$Html$Attributes$class('modal-content modal-card')
+					]),
 				_List_fromArray(
 					[
 						A2(
-						elm$html$Html$th,
+						elm$html$Html$header,
 						_List_fromArray(
 							[
-								elm$html$Html$Attributes$rowspan(2),
-								A2(elm$html$Html$Attributes$style, 'vertical-align', 'middle')
+								elm$html$Html$Attributes$class('modal-card-head')
 							]),
 						_List_fromArray(
 							[
-								elm$html$Html$text(
-								elm$core$String$fromInt(index))
+								A2(
+								elm$html$Html$p,
+								_List_fromArray(
+									[
+										elm$html$Html$Attributes$class('modal-card-title')
+									]),
+								_List_fromArray(
+									[
+										elm$html$Html$text('診断結果')
+									])),
+								A2(
+								elm$html$Html$button,
+								_List_fromArray(
+									[
+										elm$html$Html$Attributes$class('modal-button-close delete')
+									]),
+								_List_Nil),
+								A2(elm$html$Html$br, _List_Nil, _List_Nil)
 							])),
 						A2(
-						elm$html$Html$td,
-						_List_Nil,
+						elm$html$Html$section,
+						_List_fromArray(
+							[
+								elm$html$Html$Attributes$class('modal-card-body')
+							]),
 						_List_fromArray(
 							[
 								A2(
-								elm$html$Html$input,
+								elm$html$Html$div,
 								_List_fromArray(
 									[
-										elm$html$Html$Attributes$type_('radio'),
-										elm$html$Html$Attributes$name(
-										elm$core$String$fromInt(index)),
-										elm$html$Html$Attributes$value(
-										author$project$Main$resultToString(m1)),
-										elm$html$Html$Events$onInput(
-										author$project$Main$Select(index - 1))
+										elm$html$Html$Attributes$class('columns')
 									]),
-								_List_Nil)
+								_List_fromArray(
+									[
+										A2(
+										elm$html$Html$div,
+										_List_fromArray(
+											[
+												elm$html$Html$Attributes$class('column')
+											]),
+										A2(
+											elm$core$List$cons,
+											A2(
+												elm$html$Html$p,
+												_List_fromArray(
+													[
+														elm$html$Html$Attributes$class('content is-size-5')
+													]),
+												_List_fromArray(
+													[
+														elm$html$Html$text('あなたの一次的な5役者の賜物は・・・')
+													])),
+											_Utils_ap(
+												author$project$Main$create1stResult(model.answers),
+												_Utils_ap(
+													author$project$Main$create2ndResult(model.answers),
+													_List_fromArray(
+														[
+															author$project$Main$createResultGraph(model.answers)
+														])))))
+									]))
 							])),
 						A2(
-						elm$html$Html$td,
-						_List_Nil,
+						elm$html$Html$footer,
 						_List_fromArray(
 							[
-								elm$html$Html$text(q1)
+								elm$html$Html$Attributes$class('modal-card-foot')
+							]),
+						_List_fromArray(
+							[
+								A2(
+								elm$html$Html$button,
+								_List_fromArray(
+									[
+										elm$html$Html$Attributes$class('button modal-card-close')
+									]),
+								_List_fromArray(
+									[
+										elm$html$Html$text('閉じる')
+									]))
 							]))
-					])),
+					]))
+			]));
+};
+var author$project$Main$viewTendacy = function (model) {
+	return A2(
+		elm$html$Html$div,
+		A2(
+			elm$core$List$cons,
+			elm$html$Html$Events$onClick(
+				author$project$Main$NextView(author$project$Main$Question)),
+			author$project$Main$modal(
+				_Utils_eq(model.viewing, author$project$Main$Tendacy))),
+		_List_fromArray(
+			[
 				A2(
-				elm$html$Html$tr,
-				_List_Nil,
+				elm$html$Html$div,
+				_List_fromArray(
+					[
+						elm$html$Html$Attributes$class('modal-background')
+					]),
+				_List_Nil),
+				A2(
+				elm$html$Html$div,
+				_List_fromArray(
+					[
+						elm$html$Html$Attributes$class('modal-content modal-card')
+					]),
 				_List_fromArray(
 					[
 						A2(
-						elm$html$Html$td,
-						_List_Nil,
+						elm$html$Html$header,
+						_List_fromArray(
+							[
+								elm$html$Html$Attributes$class('modal-card-head')
+							]),
 						_List_fromArray(
 							[
 								A2(
-								elm$html$Html$input,
+								elm$html$Html$p,
 								_List_fromArray(
 									[
-										elm$html$Html$Attributes$type_('radio'),
-										elm$html$Html$Attributes$name(
-										elm$core$String$fromInt(index)),
-										elm$html$Html$Attributes$value(
-										author$project$Main$resultToString(m2)),
-										elm$html$Html$Events$onInput(
-										author$project$Main$Select(index - 1))
+										elm$html$Html$Attributes$class('modal-card-title')
 									]),
-								_List_Nil)
+								_List_fromArray(
+									[
+										elm$html$Html$text('性向一覧')
+									])),
+								A2(
+								elm$html$Html$button,
+								_List_fromArray(
+									[
+										elm$html$Html$Attributes$class('modal-button-close delete')
+									]),
+								_List_Nil),
+								A2(elm$html$Html$br, _List_Nil, _List_Nil)
 							])),
 						A2(
-						elm$html$Html$td,
-						_List_Nil,
+						elm$html$Html$section,
 						_List_fromArray(
 							[
-								elm$html$Html$text(q2)
+								elm$html$Html$Attributes$class('modal-card-body')
+							]),
+						_List_fromArray(
+							[
+								A2(
+								elm$html$Html$div,
+								_List_fromArray(
+									[
+										elm$html$Html$Attributes$class('columns')
+									]),
+								_List_fromArray(
+									[
+										A2(
+										elm$html$Html$div,
+										_List_fromArray(
+											[
+												elm$html$Html$Attributes$class('column')
+											]),
+										A2(
+											elm$core$List$map,
+											author$project$Main$makeResultView,
+											_List_fromArray(
+												[author$project$Main$A, author$project$Main$B, author$project$Main$C, author$project$Main$D, author$project$Main$E])))
+									]))
+							])),
+						A2(
+						elm$html$Html$footer,
+						_List_fromArray(
+							[
+								elm$html$Html$Attributes$class('modal-card-foot')
+							]),
+						_List_fromArray(
+							[
+								A2(
+								elm$html$Html$button,
+								_List_fromArray(
+									[
+										elm$html$Html$Attributes$class('button modal-card-close')
+									]),
+								_List_fromArray(
+									[
+										elm$html$Html$text('閉じる')
+									]))
 							]))
 					]))
-			]);
-	});
+			]));
+};
 var elm$core$Basics$neq = _Utils_notEqual;
 var elm$core$Basics$not = _Basics_not;
 var elm$core$Basics$composeL = F3(
@@ -7110,12 +7354,7 @@ var elm$core$List$all = F2(
 			list);
 	});
 var elm$html$Html$a = _VirtualDom_node('a');
-var elm$html$Html$br = _VirtualDom_node('br');
-var elm$html$Html$button = _VirtualDom_node('button');
-var elm$html$Html$footer = _VirtualDom_node('footer');
 var elm$html$Html$h1 = _VirtualDom_node('h1');
-var elm$html$Html$header = _VirtualDom_node('header');
-var elm$html$Html$section = _VirtualDom_node('section');
 var elm$html$Html$table = _VirtualDom_node('table');
 var elm$html$Html$tbody = _VirtualDom_node('tbody');
 var elm$html$Html$tfoot = _VirtualDom_node('tfoot');
@@ -7136,22 +7375,6 @@ var elm$html$Html$Attributes$boolProperty = F2(
 	});
 var elm$html$Html$Attributes$disabled = elm$html$Html$Attributes$boolProperty('disabled');
 var elm$html$Html$Attributes$placeholder = elm$html$Html$Attributes$stringProperty('placeholder');
-var elm$virtual_dom$VirtualDom$Normal = function (a) {
-	return {$: 'Normal', a: a};
-};
-var elm$html$Html$Events$on = F2(
-	function (event, decoder) {
-		return A2(
-			elm$virtual_dom$VirtualDom$on,
-			event,
-			elm$virtual_dom$VirtualDom$Normal(decoder));
-	});
-var elm$html$Html$Events$onClick = function (msg) {
-	return A2(
-		elm$html$Html$Events$on,
-		'click',
-		elm$json$Json$Decode$succeed(msg));
-};
 var author$project$Main$view = function (model) {
 	return A2(
 		elm$html$Html$section,
@@ -7254,11 +7477,22 @@ var author$project$Main$view = function (model) {
 						elm$html$Html$p,
 						_List_fromArray(
 							[
+								elm$html$Html$Attributes$class('content is-small'),
+								A2(elm$html$Html$Attributes$style, 'margin-bottom', '0px')
+							]),
+						_List_fromArray(
+							[
+								elm$html$Html$text('名前を入力すると結果が保存されます。結果を保存したくない場合は名前を入力しないでください。')
+							])),
+						A2(
+						elm$html$Html$p,
+						_List_fromArray(
+							[
 								elm$html$Html$Attributes$class('content is-small')
 							]),
 						_List_fromArray(
 							[
-								elm$html$Html$text('名前を入力するとデータが保存されます。データを保存したくない場合は名前を入力しないでください。')
+								elm$html$Html$text('結果は１ヶ月経過すると自動的に消去されます。')
 							])),
 						A2(
 						elm$html$Html$table,
@@ -7395,232 +7629,15 @@ var author$project$Main$view = function (model) {
 									return !canSubmit(model.answers);
 								}()),
 								elm$html$Html$Events$onClick(author$project$Main$Submit),
-								elm$html$Html$Attributes$class('button')
+								_Utils_eq(model.viewing, author$project$Main$Loading) ? elm$html$Html$Attributes$class('button is-loading') : elm$html$Html$Attributes$class('button')
 							]),
 						_List_fromArray(
 							[
 								elm$html$Html$text('回答')
 							]))
 					])),
-				A2(
-				elm$html$Html$div,
-				A2(
-					elm$core$List$cons,
-					elm$html$Html$Events$onClick(
-						author$project$Main$NextView(author$project$Main$Question)),
-					author$project$Main$modal(
-						_Utils_eq(model.viewing, author$project$Main$Result))),
-				_List_fromArray(
-					[
-						A2(
-						elm$html$Html$div,
-						_List_fromArray(
-							[
-								elm$html$Html$Attributes$class('modal-background')
-							]),
-						_List_Nil),
-						A2(
-						elm$html$Html$div,
-						_List_fromArray(
-							[
-								elm$html$Html$Attributes$class('modal-content modal-card')
-							]),
-						_List_fromArray(
-							[
-								A2(
-								elm$html$Html$header,
-								_List_fromArray(
-									[
-										elm$html$Html$Attributes$class('modal-card-head')
-									]),
-								_List_fromArray(
-									[
-										A2(
-										elm$html$Html$p,
-										_List_fromArray(
-											[
-												elm$html$Html$Attributes$class('modal-card-title')
-											]),
-										_List_fromArray(
-											[
-												elm$html$Html$text('診断結果')
-											])),
-										A2(
-										elm$html$Html$button,
-										_List_fromArray(
-											[
-												elm$html$Html$Attributes$class('modal-button-close delete')
-											]),
-										_List_Nil),
-										A2(elm$html$Html$br, _List_Nil, _List_Nil)
-									])),
-								A2(
-								elm$html$Html$section,
-								_List_fromArray(
-									[
-										elm$html$Html$Attributes$class('modal-card-body')
-									]),
-								_List_fromArray(
-									[
-										A2(
-										elm$html$Html$div,
-										_List_fromArray(
-											[
-												elm$html$Html$Attributes$class('columns')
-											]),
-										_List_fromArray(
-											[
-												A2(
-												elm$html$Html$div,
-												_List_fromArray(
-													[
-														elm$html$Html$Attributes$class('column')
-													]),
-												A2(
-													elm$core$List$cons,
-													A2(
-														elm$html$Html$p,
-														_List_fromArray(
-															[
-																elm$html$Html$Attributes$class('content is-size-5')
-															]),
-														_List_fromArray(
-															[
-																elm$html$Html$text('あなたの一次的な5役者の賜物は・・・')
-															])),
-													_Utils_ap(
-														author$project$Main$create1stResult(model.answers),
-														_Utils_ap(
-															author$project$Main$create2ndResult(model.answers),
-															_List_fromArray(
-																[
-																	author$project$Main$createResultGraph(model.answers)
-																])))))
-											]))
-									])),
-								A2(
-								elm$html$Html$footer,
-								_List_fromArray(
-									[
-										elm$html$Html$Attributes$class('modal-card-foot')
-									]),
-								_List_fromArray(
-									[
-										A2(
-										elm$html$Html$button,
-										_List_fromArray(
-											[
-												elm$html$Html$Attributes$class('button modal-card-close')
-											]),
-										_List_fromArray(
-											[
-												elm$html$Html$text('閉じる')
-											]))
-									]))
-							]))
-					])),
-				A2(
-				elm$html$Html$div,
-				A2(
-					elm$core$List$cons,
-					elm$html$Html$Events$onClick(
-						author$project$Main$NextView(author$project$Main$Question)),
-					author$project$Main$modal(
-						_Utils_eq(model.viewing, author$project$Main$Tendacy))),
-				_List_fromArray(
-					[
-						A2(
-						elm$html$Html$div,
-						_List_fromArray(
-							[
-								elm$html$Html$Attributes$class('modal-background')
-							]),
-						_List_Nil),
-						A2(
-						elm$html$Html$div,
-						_List_fromArray(
-							[
-								elm$html$Html$Attributes$class('modal-content modal-card')
-							]),
-						_List_fromArray(
-							[
-								A2(
-								elm$html$Html$header,
-								_List_fromArray(
-									[
-										elm$html$Html$Attributes$class('modal-card-head')
-									]),
-								_List_fromArray(
-									[
-										A2(
-										elm$html$Html$p,
-										_List_fromArray(
-											[
-												elm$html$Html$Attributes$class('modal-card-title')
-											]),
-										_List_fromArray(
-											[
-												elm$html$Html$text('性向一覧')
-											])),
-										A2(
-										elm$html$Html$button,
-										_List_fromArray(
-											[
-												elm$html$Html$Attributes$class('modal-button-close delete')
-											]),
-										_List_Nil),
-										A2(elm$html$Html$br, _List_Nil, _List_Nil)
-									])),
-								A2(
-								elm$html$Html$section,
-								_List_fromArray(
-									[
-										elm$html$Html$Attributes$class('modal-card-body')
-									]),
-								_List_fromArray(
-									[
-										A2(
-										elm$html$Html$div,
-										_List_fromArray(
-											[
-												elm$html$Html$Attributes$class('columns')
-											]),
-										_List_fromArray(
-											[
-												A2(
-												elm$html$Html$div,
-												_List_fromArray(
-													[
-														elm$html$Html$Attributes$class('column')
-													]),
-												A2(
-													elm$core$List$map,
-													author$project$Main$makeResultView,
-													_List_fromArray(
-														[author$project$Main$A, author$project$Main$B, author$project$Main$C, author$project$Main$D, author$project$Main$E])))
-											]))
-									])),
-								A2(
-								elm$html$Html$footer,
-								_List_fromArray(
-									[
-										elm$html$Html$Attributes$class('modal-card-foot')
-									]),
-								_List_fromArray(
-									[
-										A2(
-										elm$html$Html$button,
-										_List_fromArray(
-											[
-												elm$html$Html$Attributes$class('button modal-card-close')
-											]),
-										_List_fromArray(
-											[
-												elm$html$Html$text('閉じる')
-											]))
-									]))
-							]))
-					]))
+				author$project$Main$viewResult(model),
+				author$project$Main$viewTendacy(model)
 			]));
 };
 var elm$browser$Browser$External = function (a) {
