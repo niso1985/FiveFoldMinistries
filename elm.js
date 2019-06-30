@@ -6320,6 +6320,143 @@ var author$project$Main$row = F5(
 					]))
 			]);
 	});
+var elm$html$Html$Attributes$class = elm$html$Html$Attributes$stringProperty('className');
+var author$project$Main$modal = function (isOpen) {
+	return isOpen ? _List_fromArray(
+		[
+			elm$html$Html$Attributes$class('modal modal-fx-3dFlipHorizontal is-active')
+		]) : _List_fromArray(
+		[
+			elm$html$Html$Attributes$class('modal modal-fx-3dFlipHorizontal')
+		]);
+};
+var elm$html$Html$br = _VirtualDom_node('br');
+var elm$html$Html$button = _VirtualDom_node('button');
+var elm$html$Html$div = _VirtualDom_node('div');
+var elm$html$Html$footer = _VirtualDom_node('footer');
+var elm$html$Html$header = _VirtualDom_node('header');
+var elm$html$Html$p = _VirtualDom_node('p');
+var elm$html$Html$section = _VirtualDom_node('section');
+var elm$virtual_dom$VirtualDom$Normal = function (a) {
+	return {$: 'Normal', a: a};
+};
+var elm$html$Html$Events$on = F2(
+	function (event, decoder) {
+		return A2(
+			elm$virtual_dom$VirtualDom$on,
+			event,
+			elm$virtual_dom$VirtualDom$Normal(decoder));
+	});
+var elm$html$Html$Events$onClick = function (msg) {
+	return A2(
+		elm$html$Html$Events$on,
+		'click',
+		elm$json$Json$Decode$succeed(msg));
+};
+var author$project$Main$viewFailure = function (model) {
+	return A2(
+		elm$html$Html$div,
+		A2(
+			elm$core$List$cons,
+			elm$html$Html$Events$onClick(
+				author$project$Main$NextView(author$project$Main$Question)),
+			author$project$Main$modal(
+				_Utils_eq(model.viewing, author$project$Main$Failure))),
+		_List_fromArray(
+			[
+				A2(
+				elm$html$Html$div,
+				_List_fromArray(
+					[
+						elm$html$Html$Attributes$class('modal-background')
+					]),
+				_List_Nil),
+				A2(
+				elm$html$Html$div,
+				_List_fromArray(
+					[
+						elm$html$Html$Attributes$class('modal-content modal-card')
+					]),
+				_List_fromArray(
+					[
+						A2(
+						elm$html$Html$header,
+						_List_fromArray(
+							[
+								elm$html$Html$Attributes$class('modal-card-head')
+							]),
+						_List_fromArray(
+							[
+								A2(
+								elm$html$Html$p,
+								_List_fromArray(
+									[
+										elm$html$Html$Attributes$class('modal-card-title has-text-danger')
+									]),
+								_List_fromArray(
+									[
+										elm$html$Html$text('エラーが発生しました！！')
+									])),
+								A2(
+								elm$html$Html$button,
+								_List_fromArray(
+									[
+										elm$html$Html$Attributes$class('modal-button-close delete')
+									]),
+								_List_Nil),
+								A2(elm$html$Html$br, _List_Nil, _List_Nil)
+							])),
+						A2(
+						elm$html$Html$section,
+						_List_fromArray(
+							[
+								elm$html$Html$Attributes$class('modal-card-body')
+							]),
+						_List_fromArray(
+							[
+								A2(
+								elm$html$Html$p,
+								_List_fromArray(
+									[
+										elm$html$Html$Attributes$class('content')
+									]),
+								_List_fromArray(
+									[
+										elm$html$Html$text('サーバーとの通信エラーが発生しました。')
+									])),
+								A2(
+								elm$html$Html$p,
+								_List_fromArray(
+									[
+										elm$html$Html$Attributes$class('content')
+									]),
+								_List_fromArray(
+									[
+										elm$html$Html$text('名前を未入力にして試すか、時間を置いてもう一度試してみてください。')
+									]))
+							])),
+						A2(
+						elm$html$Html$footer,
+						_List_fromArray(
+							[
+								elm$html$Html$Attributes$class('modal-card-foot')
+							]),
+						_List_fromArray(
+							[
+								A2(
+								elm$html$Html$button,
+								_List_fromArray(
+									[
+										elm$html$Html$Attributes$class('button modal-card-close')
+									]),
+								_List_fromArray(
+									[
+										elm$html$Html$text('閉じる')
+									]))
+							]))
+					]))
+			]));
+};
 var elm$core$List$sortBy = _List_sortBy;
 var author$project$Main$sortByFirst = A2(
 	elm$core$Basics$composeR,
@@ -6703,12 +6840,10 @@ var author$project$Main$resultWeekPoint = function (m) {
 					]));
 	}
 };
-var elm$html$Html$div = _VirtualDom_node('div');
 var elm$html$Html$figure = _VirtualDom_node('figure');
 var elm$html$Html$img = _VirtualDom_node('img');
 var elm$html$Html$span = _VirtualDom_node('span');
 var elm$html$Html$Attributes$alt = elm$html$Html$Attributes$stringProperty('alt');
-var elm$html$Html$Attributes$class = elm$html$Html$Attributes$stringProperty('className');
 var elm$html$Html$Attributes$src = function (url) {
 	return A2(
 		elm$html$Html$Attributes$stringProperty,
@@ -6996,7 +7131,6 @@ var elm$core$List$member = F2(
 			},
 			xs);
 	});
-var elm$html$Html$p = _VirtualDom_node('p');
 var author$project$Main$create2ndResult = function (a) {
 	var lm = author$project$Main$findNo2SelectedResultType(a);
 	return A2(elm$core$List$member, author$project$Main$None, lm) ? _List_fromArray(
@@ -7085,36 +7219,6 @@ var author$project$Main$createResultGraph = function (a) {
 				elm$html$Html$Attributes$class('level is-mobile')
 			]),
 		content);
-};
-var author$project$Main$modal = function (isOpen) {
-	return isOpen ? _List_fromArray(
-		[
-			elm$html$Html$Attributes$class('modal modal-fx-3dFlipHorizontal is-active')
-		]) : _List_fromArray(
-		[
-			elm$html$Html$Attributes$class('modal modal-fx-3dFlipHorizontal')
-		]);
-};
-var elm$html$Html$br = _VirtualDom_node('br');
-var elm$html$Html$button = _VirtualDom_node('button');
-var elm$html$Html$footer = _VirtualDom_node('footer');
-var elm$html$Html$header = _VirtualDom_node('header');
-var elm$html$Html$section = _VirtualDom_node('section');
-var elm$virtual_dom$VirtualDom$Normal = function (a) {
-	return {$: 'Normal', a: a};
-};
-var elm$html$Html$Events$on = F2(
-	function (event, decoder) {
-		return A2(
-			elm$virtual_dom$VirtualDom$on,
-			event,
-			elm$virtual_dom$VirtualDom$Normal(decoder));
-	});
-var elm$html$Html$Events$onClick = function (msg) {
-	return A2(
-		elm$html$Html$Events$on,
-		'click',
-		elm$json$Json$Decode$succeed(msg));
 };
 var author$project$Main$viewResult = function (model) {
 	return A2(
@@ -7637,7 +7741,8 @@ var author$project$Main$view = function (model) {
 							]))
 					])),
 				author$project$Main$viewResult(model),
-				author$project$Main$viewTendacy(model)
+				author$project$Main$viewTendacy(model),
+				author$project$Main$viewFailure(model)
 			]));
 };
 var elm$browser$Browser$External = function (a) {

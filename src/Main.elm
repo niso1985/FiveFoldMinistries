@@ -8,7 +8,6 @@ import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
 import Http exposing (..)
-import Json.Decode exposing (Decoder, field, string)
 import Json.Encode exposing (Value)
 
 
@@ -348,6 +347,7 @@ view model =
             ]
         , viewResult model
         , viewTendacy model
+        , viewFailure model
         ]
 
 
@@ -392,6 +392,27 @@ viewTendacy model =
                 [ div [ class "columns" ]
                     [ div [ class "column" ] ([ A, B, C, D, E ] |> List.map makeResultView)
                     ]
+                ]
+            , footer [ class "modal-card-foot" ]
+                [ button [ class "button modal-card-close" ] [ text "閉じる" ]
+                ]
+            ]
+        ]
+
+
+viewFailure : Model -> Html Msg
+viewFailure model =
+    div (onClick (NextView Question) :: modal (model.viewing == Failure))
+        [ div [ class "modal-background" ] []
+        , div [ class "modal-content modal-card" ]
+            [ Html.header [ class "modal-card-head" ]
+                [ p [ class "modal-card-title has-text-danger" ] [ text "エラーが発生しました！！" ]
+                , button [ class "modal-button-close delete" ] []
+                , br [] []
+                ]
+            , section [ class "modal-card-body" ]
+                [ p [ class "content" ] [ text "サーバーとの通信エラーが発生しました。" ]
+                , p [ class "content" ] [ text "名前を未入力にして試すか、時間を置いてもう一度試してみてください。" ]
                 ]
             , footer [ class "modal-card-foot" ]
                 [ button [ class "button modal-card-close" ] [ text "閉じる" ]
