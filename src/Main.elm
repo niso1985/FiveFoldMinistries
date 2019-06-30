@@ -37,7 +37,7 @@ type Viewing
 type alias Model =
     { answers : Array ResultType
     , viewing : Viewing
-    , name : Maybe String
+    , name : String
     }
 
 
@@ -45,7 +45,7 @@ init : () -> ( Model, Cmd Msg )
 init _ =
     ( { answers = Array.repeat 3 None
       , viewing = Question
-      , name = Nothing
+      , name = ""
       }
     , Cmd.none
     )
@@ -199,6 +199,7 @@ findNo2SelectedResultType a =
 
 type Msg
     = Select Int String
+    | InputName String
     | Submit
     | NextView Viewing
     | Response (Result Http.Error String)
@@ -209,6 +210,9 @@ update msg model =
     case msg of
         Select index str ->
             ( { model | answers = model.answers |> Array.set index (stringToResult str) }, Cmd.none )
+
+        InputName str ->
+            ( { model | name = str }, Cmd.none )
 
         Submit ->
             ( { model | viewing = Loading }, postResult model )
@@ -248,7 +252,7 @@ makeJsonBody model =
         ansNums =
             [ A, B, C, D, E ] |> List.map (\m -> ( resultToString m, Json.Encode.int (getSelectedNum m model.answers) ))
     in
-    Json.Encode.object (( "name", Json.Encode.string (Maybe.withDefault "" model.name) ) :: ansNums)
+    Json.Encode.object (( "name", Json.Encode.string model.name ) :: ansNums)
 
 
 
@@ -266,7 +270,7 @@ view model =
                 [ div [ class "level-left" ]
                     [ p [ class "level-item" ] [ text "名前" ]
                     , div [ class "level-item" ]
-                        [ input [ class "input", placeholder "名前" ] []
+                        [ input [ class "input", placeholder "名前", value model.name, onInput InputName ] []
                         ]
                     ]
                 ]
