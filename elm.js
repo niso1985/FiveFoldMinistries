@@ -6034,7 +6034,7 @@ var author$project$Main$postResult = function (model) {
 			method: 'POST',
 			timeout: elm$core$Maybe$Nothing,
 			tracker: elm$core$Maybe$Nothing,
-			url: 'https://script.google.com/macros/s/AKfycbzHfR6MHPfYz8CLrtGBNPtlAQIbOOyQ_d9E5wLVrMOi1vlc8I4/exec'
+			url: '/api/'
 		});
 };
 var author$project$Main$stringToResult = function (str) {
